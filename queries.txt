@@ -1,6 +1,7 @@
 student:
 1- How popular is a course in any given semester
 2- Details of a certain course : the type of assessment, duration, etc.
+3- Number of students with similar qualifications in the course.
 
 
 
@@ -8,4 +9,11 @@ Admin:
 
 1- Average grade of a certain course.
 2- Avg time taken in the submission of a certain course assessment.
-3- The 
+3- Percentage of students who could/couldn't make a particular submission.
+4- Students are not eligible for a certain course.
+4- The type of course assessment method that is more likely to have more successful submissions.
+5- Which method of availbility of course material is more accessible to the students.
+6- The trend of student inteaction with a moudule vs the timeline.
+7- Courses with the highest unregistered students and their details.
+8- Which age band/qualification type does the course intrest the most.
+9- Percentage of diabled students in the course.
