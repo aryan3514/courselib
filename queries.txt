@@ -1,0 +1,39 @@
+
+
+
+
+Student Queries :
+
+1) Find the module with the shortest length of the module presentation.
+
+2) Find all the modules for the current semester.
+
+3) How many students from my geographic region have taken the module?
+
+4) Number of times I attended this module before?
+
+
+
+Admin Queries :
+
+
+1) Most popular module per semester?
+
+2) Most popular VLE material per semester?
+
+3) Student with maximum interaction per semester/module?
+
+4) Percentage of students who have less than average interaction per semester?
+
+5) Which day saw maximum traffic from the students and what was the maximum traffic?
+
+6) Which course has the maximum grades to traffic ratio? (watching less but scoring more)
+
+7) What is the current sex ratio in the university?
+
+8) Number of submissions upto a certain date from the start of the module?
+
+9) Number of enrolled students in a certain module/module presentation?
+
+10)  Which region sees the maximum interaction with VLE?
+
