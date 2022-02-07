@@ -1,0 +1,19 @@
+1. create a venv module to create virtual environments.
+$ python3 -m venv venv(for macOS/linux)
+
+2. activate the environment
+$ . venv/bin/activate (mac/linux)
+
+3. install flask
+$ pip install Flask
+
+4. install psycopg2 for db connection to backend
+$ pip install psycopg2-binary
+
+5. open db.py and add your own db password
+
+6. run using-
+$ export FLASK_APP=app.py
+$ flask run -p 5000
+
+now check terminal to see db is running, and check localhost:5000 to see a line printed
