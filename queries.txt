@@ -1,0 +1,11 @@
+student:
+1- How popular is a course in any given semester
+2- Details of a certain course : the type of assessment, duration, etc.
+
+
+
+Admin:
+
+1- Average grade of a certain course.
+2- Avg time taken in the submission of a certain course assessment.
+3- The 
