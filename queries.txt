@@ -12,6 +12,12 @@ Student Queries :
 
 4) Number of times I attended this module before?
 
+5) How popular is a course in any given semester
+
+6) Details of a certain course : the type of assessment, duration, etc.
+
+7) Number of students with similar qualifications in the course.
+
 
 
 Admin Queries :
@@ -36,4 +42,24 @@ Admin Queries :
 9) Number of enrolled students in a certain module/module presentation?
 
 10)  Which region sees the maximum interaction with VLE?
+
+11) Average grade of a certain course.
+
+12)  Avg time taken in the submission of a certain course assessment.
+
+13) Percentage of students who could/couldn't make a particular submission.
+
+14) Students are not eligible for a certain course.
+
+15) The type of course assessment method that is more likely to have more successful submissions.
+
+16) Which method of availbility of course material is more accessible to the students.
+
+17) The trend of student inteaction with a moudule vs the timeline.
+
+18) Courses with the highest unregistered students and their details.
+
+19) Which age band/qualification type does the course intrest the most.
+
+20) Percentage of diabled students in the course.
 
