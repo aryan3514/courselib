@@ -1,7 +1,5 @@
 
 
-
-
 Student Queries :
 
 1) Find the module with the shortest length of the module presentation.
@@ -18,6 +16,8 @@ Student Queries :
 
 7) Number of students with similar qualifications in the course.
 
+8) Average grade of a certain course.
+
 
 
 Admin Queries :
@@ -33,7 +33,7 @@ Admin Queries :
 
 5) Which day saw maximum traffic from the students and what was the maximum traffic?
 
-6) Which course has the maximum grades to traffic ratio? (watching less but scoring more)
+6) Which course has the maximum/average grades to traffic ratio? (watching less but scoring more)
 
 7) What is the current sex ratio in the university?
 
@@ -49,17 +49,17 @@ Admin Queries :
 
 13) Percentage of students who could/couldn't make a particular submission.
 
-14) Students are not eligible for a certain course.
+14) Students who are not eligible for a certain course. (Probation)
 
 15) The type of course assessment method that is more likely to have more successful submissions.
 
 16) Which method of availbility of course material is more accessible to the students.
 
-17) The trend of student inteaction with a moudule vs the timeline.
+17) The trend of student inteaction with a module vs the timeline.
 
 18) Courses with the highest unregistered students and their details.
 
-19) Which age band/qualification type does the course intrest the most.
+19) Which age band/qualification type does the course interest the most?
 
-20) Percentage of diabled students in the course.
+20) Percentage of disabled students in the course.
 
