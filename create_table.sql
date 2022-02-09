@@ -10,13 +10,12 @@ CREATE table IF NOT EXISTS courses(
 CREATE table IF NOT EXISTS assessments(
     id_assessment int NOT NULL,
     code_module text,
-    code_prensentation text,
+    code_presentation text,
     assessment_type text,
     date int,
     weight float,
     CONSTRAINT assessments_key PRIMARY KEY (id_assessment),
-    FOREIGN KEY (code_module) references courses(code_module),
-    FOREIGN KEY (code_presentation) references courses(code_presentation)
+    FOREIGN KEY (code_module, code_presentation) references courses
 );
 
 CREATE table IF NOT EXISTS studentInfo(
@@ -33,8 +32,8 @@ CREATE table IF NOT EXISTS studentInfo(
     num_of_prev_attempts int,
     studied_credits int,
     CONSTRAINT student_key PRIMARY KEY (id_student),
-    FOREIGN KEY (code_module) references courses(code_module),
-    FOREIGN KEY (code_presentation) references courses(code_presentation)
+    FOREIGN KEY (code_module, code_presentation) references courses
+    
 );
 
 CREATE table IF NOT EXISTS vle(
@@ -45,8 +44,7 @@ CREATE table IF NOT EXISTS vle(
     week_from int,
     week_to int,
     CONSTRAINT vle_key PRIMARY KEY (id_site),
-    FOREIGN KEY (code_module) references courses(code_module),
-    FOREIGN KEY (code_presentation) references courses(code_presentation)
+    FOREIGN KEY (code_module, code_presentation) references courses
 );
 
 CREATE table IF NOT EXISTS studentAssessment(
@@ -66,8 +64,7 @@ CREATE table IF NOT EXISTS studentVle(
     code_presentation text,
     date int,
     sum_click int,
-    FOREIGN KEY (code_module) references courses(code_module),
-    FOREIGN KEY (code_presentation) references courses(code_presentation),
+    FOREIGN KEY (code_module, code_presentation) references courses,
     FOREIGN KEY (id_site) references vle(id_site),
     FOREIGN KEY (id_student) references studentInfo(id_student)
 );
@@ -78,8 +75,7 @@ CREATE table IF NOT EXISTS studentRegistration(
     code_presentation text,
     date_registration int,
     date_unregistration int,
-    FOREIGN KEY (code_module) references courses(code_module),
-    FOREIGN KEY (code_presentation) references courses(code_presentation),
+    FOREIGN KEY (code_module, code_presentation) references courses,
     FOREIGN KEY (id_student) references studentInfo(id_student)
 );
 
