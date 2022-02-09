@@ -3,7 +3,8 @@ CREATE table IF NOT EXISTS courses(
    code_module text,
    code_presentation text,
    module_presentation int,
-   PRIMARY KEY (code_module, code_presentation)
+   CONSTRAINT courses_key UNIQUE (code_module, code_presentation),
+   CONSTRAINT courses_key PRIMARY KEY (code_module, code_presentation)
 );
 
 CREATE table IF NOT EXISTS assessments(
