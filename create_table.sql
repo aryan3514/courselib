@@ -15,7 +15,7 @@ CREATE table IF NOT EXISTS assessments(
     date int,
     weight float,
     CONSTRAINT assessments_key PRIMARY KEY (id_assessment),
-    FOREIGN KEY (code_module, code_presentation) references courses
+    FOREIGN KEY (code_module, code_presentation) references courses(code_module, code_presentation)
 );
 
 CREATE table IF NOT EXISTS studentInfo(
@@ -32,7 +32,7 @@ CREATE table IF NOT EXISTS studentInfo(
     num_of_prev_attempts int,
     studied_credits int,
     CONSTRAINT student_key PRIMARY KEY (id_student),
-    FOREIGN KEY (code_module, code_presentation) references courses
+    FOREIGN KEY (code_module, code_presentation) references courses(code_module, code_presentation)
     
 );
 
@@ -44,7 +44,7 @@ CREATE table IF NOT EXISTS vle(
     week_from int,
     week_to int,
     CONSTRAINT vle_key PRIMARY KEY (id_site),
-    FOREIGN KEY (code_module, code_presentation) references courses
+    FOREIGN KEY (code_module, code_presentation) references courses(code_module, code_presentation)
 );
 
 CREATE table IF NOT EXISTS studentAssessment(
@@ -81,3 +81,10 @@ CREATE table IF NOT EXISTS studentRegistration(
 
 
 
+\COPY courses FROM 'courses.csv' DELIMITER ',' CSV HEADER;
+\COPY assessments FROM 'assessments.csv' DELIMITER ',' CSV HEADER;
+\COPY studentInfo FROM 'studentInfo.csv' DELIMITER ',' CSV HEADER;
+\COPY studentAssessment FROM 'studentAssessment.csv' DELIMITER ',' CSV HEADER;
+\COPY studentRegistration FROM 'studentRegistration.csv' DELIMITER ',' CSV HEADER;
+\COPY studentVle FROM 'studentVle.csv' DELIMITER ',' CSV HEADER;
+\COPY vle FROM 'vle.csv' DELIMITER ',' CSV HEADER;
