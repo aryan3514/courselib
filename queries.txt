@@ -1,65 +1,10 @@
+Admin :
 
-
-Student Queries :
-
-1) Find the module with the shortest length of the module presentation.
-
-2) Find all the modules for the current semester.
-
-3) How many students from my geographic region have taken the module?
-
-4) Number of times I attended this module before?
-
-5) How popular is a course in any given semester
-
-6) Details of a certain course : the type of assessment, duration, etc.
-
-7) Number of students with similar qualifications in the course.
-
-8) Average grade of a certain course.
-
-
-
-Admin Queries :
-
-
-1) Most popular module per semester?
-
-2) Most popular VLE material per semester?
-
-3) Student with maximum interaction per semester/module?
-
-4) Percentage of students who have less than average interaction per semester?
-
-5) Which day saw maximum traffic from the students and what was the maximum traffic?
-
-6) Which course has the maximum/average grades to traffic ratio? (watching less but scoring more)
-
-7) What is the current sex ratio in the university?
-
-8) Number of submissions upto a certain date from the start of the module?
-
-9) Number of enrolled students in a certain module/module presentation?
-
-10)  Which region sees the maximum interaction with VLE?
-
-11) Average grade of a certain course.
-
-12)  Avg time taken in the submission of a certain course assessment.
-
-13) Percentage of students who could/couldn't make a particular submission.
-
-14) Students who are not eligible for a certain course. (Probation)
-
-15) The type of course assessment method that is more likely to have more successful submissions.
-
-16) Which method of availbility of course material is more accessible to the students.
-
-17) The trend of student inteaction with a module vs the timeline.
-
-18) Courses with the highest unregistered students and their details.
-
-19) Which age band/qualification type does the course interest the most?
-
-20) Percentage of disabled students in the course.
-
+1) Instructors' name change
+2) Update the instructor for a certain section (teachings.csv)
+3) Schedule for a certain instructor
+4) Grade Distribution for a certain instructor (for moderation)
+5) Convert subject to course codes (220 -> COL220)
+6) Change course name
+7) All sections on a certain day
+8) All instructors for a certain course.
