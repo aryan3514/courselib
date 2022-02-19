@@ -1,5 +1,6 @@
 Admin :
 
+
 1) Instructors' name change
 2) Update the instructor for a certain section (teachings.csv)
 3) Schedule for a certain instructor
@@ -8,3 +9,16 @@ Admin :
 6) Change course name
 7) All sections on a certain day
 8) All instructors for a certain course.
+9) Find all courses from a certain subject.
+10) All courses of an instructor.
+11) All course offerings of a certain course of an instructor (course, instructor).
+12) All courses in a term.
+13) All course offerings of a certain course in a term (course, term).
+
+
+Walk Through :
+ User's Input : Our output
+ Subject : All courses 
+ Subject, Course : All Course Offerings
+ Subject, Course, Course Offerings : Schedule, Facility/Room Information, Grade Distribution, Professor
+
