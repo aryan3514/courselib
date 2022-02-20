@@ -12,7 +12,7 @@ create table IF NOT EXISTS course_offerings(
 	term_code int,
 	name text,
 	CONSTRAINT course_offerings_key PRIMARY KEY (uuid),
-	CONSTRAINT course_uuid_ref FOREIGN KEY (course_uuid) references courses(uuid),
+	CONSTRAINT course_uuid_ref FOREIGN KEY (course_uuid) references courses(uuid)
 );
 
 CREATE TABLE IF NOT EXISTS schedules(
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS subject_memberships(
 	CONSTRAINT course_offering_uuid_ref FOREIGN KEY (course_offering_uuid) references course_offerings(uuid)
 );
 
-CREATE TABLE teachings(
+CREATE TABLE IF NOT EXISTS teachings(
 	instructor_id bigint not null,
 	section_uuid text not null,
 

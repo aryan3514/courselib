@@ -4,5 +4,37 @@
   <h1>{% block title %}Admin Page{% endblock %}</h1>
 {% endblock %}
 
+
 {% block content %}
+<h3><table>
+		<form action="" method="POST">
+          	<td>
+          		<label for="subject_selection">
+          			Subject :
+          		</label>
+          		<input type="text" name="subject_selection" 
+          			value="{{ request.form['subject_selection'] }}" 
+          			placeholder="search">
+          		</input>
+            	<select name="subject_selection2">
+            		<option>select</option>
+            		{% for x in subject_abb_list %}
+            			<option placeholder="select">
+            				{{ x[0] }}
+            			</option>
+            		{% endfor %}
+            	</select>
+            	<button type="submit">
+            		Go
+            	</button>
+            	<br>
+            	<div>
+            		{% for x in subject_list %}
+            			<h5 align="center">{{ x[1] }}</h5>
+            		{% endfor %}
+            	</div>
+          	</td>
+        </form>
+    </table>
+</h3>
 {% endblock %}

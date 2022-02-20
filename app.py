@@ -12,10 +12,35 @@ def studentpage():
     load_logged_in_student()
     return render_template('student_page.html')
 
-@app.route('/adminpage')
+@app.route('/adminpage', methods=['GET', 'POST'])
 def adminpage():
     load_logged_in_admin()
-    return render_template('admin_page.html')
+    whatToShow='all subjects'
+    if request.method == 'POST':
+        if(request.form['subject_selection']==''):
+            subject_selected = request.form['subject_selection2']
+        else:
+            subject_selected = request.form['subject_selection']
+        print("subject : ",subject_selected)
+        whatToShow='courses for a subject'
+    sub_list = renderSearches(whatToShow)
+    abb_list = getAllSubAbbreviation()
+    return render_template('admin_page.html', subject_abb_list=abb_list, subject_list=sub_list)
+
+def getAllSubAbbreviation():
+    conn = db.start_db()
+    cur = conn.cursor()
+    cur.execute("SELECT abbreviation from subjects")
+    return cur.fetchall()
+
+def renderSearches(whatToShow):
+    conn = db.start_db()
+    cur = conn.cursor()
+    if whatToShow=='all subjects':
+        cur.execute("SELECT * FROM subjects")
+        return cur.fetchall()
+        #print(cur.fetchall())
+
 
 @app.route('/adminlogin', methods=('GET', 'POST'))
 def adminlogin():
