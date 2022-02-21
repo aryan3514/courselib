@@ -1,19 +1,35 @@
 
 
 <!doctype html>
-<title>{% block title %}{% endblock %} - SAVLIP</title>
-<nav>
-  <h1>SAVLIP</h1>
-  <ul>
-    {% if g.user %}
-      <li><span>{{ g.user[0] }}</span>
-        <li><a href="{{ url_for('logout') }}">Log Out</a>
-    {% else %}
-      <li><a href="{{ url_for('adminlogin') }}">Admin Log In</a>
-      <li><a href="{{ url_for('studentlogin') }}">Student Log In</a>
-    {% endif %}
-  </ul>
+<head>
+  <meta charset="utf-8">
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/mainpage.css') }}">
+
+</head>
+
+<nav class="box1">
+
+  <h1>CourseLib</h1>
+
 </nav>
+<br><br>
+
+<nav class = "box2">
+  
+    {% if g.user %}
+      <span>{{ g.user[0] }}</span>
+        <a href="{{ url_for('logout') }}">Log Out</a>
+    {% else %}
+      <nav class = login>
+      <a href="{{ url_for('adminlogin') }}">Admin Log In</a>
+      <p>                                  </p>
+      <a href="{{ url_for('studentlogin') }}">Student Log In</a>
+      </nav>
+    {% endif %}
+
+</nav>
+
+
 <section class="content">
   <header>
     {% block header %}{% endblock %}
