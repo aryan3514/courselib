@@ -7,48 +7,18 @@
 
 
 {% block content %}
-<h3><table>
-		<form action="" method="POST">
-          	<td>
-          		<label for="subject_selection">
-          			Subject :
-          		</label>
-          		<input type="text" name="subject_selection" 
-          			value="{{ request.form['subject_selection'] }}" 
-          			placeholder="search">
-          		</input>
-            	<select name="subject_selection2">
-            		<option>select</option>
-            		{% for x in subject_abb_list %}
-            			<option placeholder="select">
-            				{{ x[0] }}
-            			</option>
-            		{% endfor %}
-            	</select>
-            	<button type="submit">
-            		Go
-            	</button>
-
-            	<label for="instructor_selection">
-                Subject :
-              </label>
-              <input type="text" name="instructor_selection" 
-                value="{{ request.form['instructor_selection'] }}" 
-                placeholder="search">
-              </input>
-              <select name="instructor_selection2">
-                <option>select</option>
-                {% for x in instructor_name_list %}
-                  <option placeholder="select">
-                    {{ x[0] }}
-                  </option>
-                {% endfor %}
-              </select>
-              <button type="submit">
-                Go
-              </button>
-          	</td>
-        </form>
-    </table>
-</h3>
+<form action="" method="POST">
+	<button type="submit" name="part 1">
+        part 1
+    </button>
+    <button type="submit" name="part 2">
+        part 2
+    </button>
+    <button type="submit" name="part 3">
+        part 3
+    </button>
+    <button type="submit" name="part 4">
+        part 4
+    </button>
+</form>
 {% endblock %}

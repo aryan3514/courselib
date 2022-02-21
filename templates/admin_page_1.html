@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Admin Page - Part 1{% endblock %}</h1>
+  
+{% endblock %}
+
+
+{% block content %}
+<h3><table>
+		<form action="" method="POST">
+          	<td>
+          		<label for="subject_selection">
+          			Subject :
+          		</label>
+          		<input type="text" name="subject_selection" 
+          			value="{{ request.form['subject_selection'] }}" 
+          			placeholder="search">
+          		</input>
+            	<select name="subject_selection2">
+                <option>select</option>
+            		{% for x in subject_abb_list %}
+            			<option>
+            				{{ x[0] }}
+            			</option>
+            		{% endfor %}
+            	</select>
+            	<button type="submit" name="subject go">
+            		Go
+            	</button>
+
+            	<label for="instructor_selection">
+                      Instructor :
+              </label>
+              <input type="text" name="instructor_selection" 
+                value="{{ request.form['instructor_selection'] }}" 
+                placeholder="search">
+              </input>
+              <select name="instructor_selection2">
+                <option>select</option>
+                {% for x in instructor_list %}
+                  <option>
+                    {{ x[0] }}
+                  </option>
+                {% endfor %}
+              </select>
+              <button type="submit" name="instructor go">
+                Go
+              </button>
+          	</td>
+        </form>
+    </table>
+    <p>selected subject : {{sub}}</p>
+    <p>selected instructor : {{inst}}</p>
+</h3>
+{% endblock %}

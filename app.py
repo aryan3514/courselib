@@ -18,17 +18,49 @@ def studentpage():
 @app.route('/adminpage', methods=['GET', 'POST'])
 def adminpage():
     load_logged_in_admin()
-    whatToShow=''
     if request.method == 'POST':
-        if(request.form['subject_selection']=='select'):
-            subject_selected = request.form['subject_selection2']
-        else:
-            subject_selected = request.form['subject_selection']
-        print("subject : ",subject_selected)
-        whatToShow='courses for a subject'
-    sub_list = renderSearches(whatToShow)
+        if 'part 1' in request.form:
+            return redirect(url_for('adminpage_1'))
+        if 'part 2' in request.form:
+            return redirect(url_for('adminpage_2'))
+    return render_template('admin_page.html')
+
+@app.route('/adminpage/1', methods=['GET', 'POST'])
+def adminpage_1():
+    load_logged_in_admin()
+    whatToDo=''
+    subject_selected=''
+    inst_selected=''
+    if request.method == 'POST':
+        if 'subject go' in request.form:
+            if(request.form['subject_selection']=='' and request.form['subject_selection2']=='select'):
+                    whatToDo='nothing'
+            elif(request.form['subject_selection']==''):
+                subject_selected = request.form['subject_selection2']
+                whatToDo='get instructors'
+            else:
+                subject_selected = request.form['subject_selection']
+                whatToDo='get instructors'
+            print("subject : ",subject_selected)
+        if 'instructor go' in request.form:
+            if(request.form['instructor_selection']=='' and request.form['instructor_selection2']=='select'):
+                    whatToDo='nothing'
+            elif(request.form['instructor_selection']==''):
+                inst_selected = request.form['instructor_selection2']
+                whatToDo='get instructors'
+            else:
+                inst_selected = request.form['instructor_selection']
+                whatToDo='get instructors'
+            print("instructor : ",inst_selected)
+    inst_list = searchInstsForSub(subject_selected)
     abb_list = getAllSubAbbreviation()
-    return render_template('admin_page.html', subject_abb_list=abb_list, subject_list=sub_list)
+    return render_template('admin_page_1.html', subject_abb_list=abb_list, instructor_list=inst_list, sub=subject_selected, inst=inst_selected)
+
+@app.route('/adminpage/2', methods=['GET', 'POST'])
+def adminpage_2():
+    load_logged_in_admin()
+    return render_template('admin_page_2.html')
+
 
 def getAllSubAbbreviation():
     conn = db.start_db()
@@ -36,13 +68,11 @@ def getAllSubAbbreviation():
     cur.execute("SELECT abbreviation from subjects")
     return cur.fetchall()
 
-def renderSearches(whatToShow):
+def searchInstsForSub(sub):
     conn = db.start_db()
     cur = conn.cursor()
-    if whatToShow=='all subjects':
-        cur.execute("SELECT * FROM subjects")
-        return cur.fetchall()
-        #print(cur.fetchall())
+    cur.execute("WITH relevant_code as (select code from subjects where abbreviation = %s), relevant_course_off_uuid as (select course_offering_uuid from relevant_code join subject_memberships on relevant_code.code=subject_memberships.subject_code), relevant_sec_id as (select uuid from relevant_course_off_uuid join sections on relevant_course_off_uuid.course_offering_uuid=sections.course_offering_uuid), relevant_inst_id as (select instructor_id, count(instructor_id) from relevant_sec_id join teachings on relevant_sec_id.uuid=teachings.section_uuid group by instructor_id), relevant_instructors as (select name, id from relevant_inst_id join instructors on relevant_inst_id.instructor_id=instructors.id order by name) select * from relevant_instructors", (sub,))
+    return cur.fetchall()
 
 
 @app.route('/adminlogin', methods=('GET', 'POST'))
