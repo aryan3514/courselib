@@ -64,8 +64,27 @@ def adminpage_1():
 @app.route('/adminpage/2', methods=['GET', 'POST'])
 def adminpage_2():
     load_logged_in_admin()
-    return render_template('admin_page_2.html')
+    course_selected=''
+    if request.method == 'POST':
+        if 'course go' in request.form:
+            if(request.form['course_selection']==''):
+                course_selected=''
+            else:
+                course_selected=request.form['course_selection']
+    course_list=[]
+    if course_selected!='':
+        course_list = getAllCourseswithCommonStart(course_selected)
+    return render_template('admin_page_2.html', courses=course_list)
 
+def getAllCourseswithCommonStart(start):
+    conn = db.start_db()
+    cur = conn.cursor()
+    print("start : ", start)
+    q = """
+    SELECT courses.name FROM courses WHERE NAME LIKE %s
+    """
+    cur.execute(q, (start+'%',))
+    return cur.fetchall()
 
 def getAllSubAbbreviation():
     conn = db.start_db()

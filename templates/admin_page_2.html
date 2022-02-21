@@ -7,5 +7,26 @@
 
 
 {% block content %}
+<div>
+	<form action="" method="POST">
+		<label for="course_selection">
+	        Course :
+	    </label>
+	    <input type="text" name="course_selection" 
+			value="{{ request.form['course_selection'] }}" 
+			placeholder="search">
+		</input>
+		<button type="submit" name="course go">
+			Go
+		</button>
+	</form>
 
+	{% for x in courses %}
+	<div>
+		<button type="submit">
+			<p>{{ x[0] }}</p>
+		</button>
+	</div>
+	{% endfor %}
+</div>
 {% endblock %}
