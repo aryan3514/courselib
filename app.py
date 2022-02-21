@@ -15,9 +15,9 @@ def studentpage():
 @app.route('/adminpage', methods=['GET', 'POST'])
 def adminpage():
     load_logged_in_admin()
-    whatToShow='all subjects'
+    whatToShow=''
     if request.method == 'POST':
-        if(request.form['subject_selection']==''):
+        if(request.form['subject_selection']=='select'):
             subject_selected = request.form['subject_selection2']
         else:
             subject_selected = request.form['subject_selection']

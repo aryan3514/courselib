@@ -27,12 +27,25 @@
             	<button type="submit">
             		Go
             	</button>
-            	<br>
-            	<div>
-            		{% for x in subject_list %}
-            			<h5 align="center">{{ x[1] }}</h5>
-            		{% endfor %}
-            	</div>
+
+            	<label for="instructor_selection">
+                Subject :
+              </label>
+              <input type="text" name="instructor_selection" 
+                value="{{ request.form['instructor_selection'] }}" 
+                placeholder="search">
+              </input>
+              <select name="instructor_selection2">
+                <option>select</option>
+                {% for x in instructor_name_list %}
+                  <option placeholder="select">
+                    {{ x[0] }}
+                  </option>
+                {% endfor %}
+              </select>
+              <button type="submit">
+                Go
+              </button>
           	</td>
         </form>
     </table>
