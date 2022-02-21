@@ -21,6 +21,48 @@ body{
     border-color: white;
 }
 
+.box2{
+    display: block;
+	background-color: rgb(17, 24, 87);
+	color: white;
+	font-family: Arial, sans-serif;
+    text-align : center;
+    float: right;
+	font-size: 14px;
+	padding: 7px 4px;
+	margin: auto;
+	border-right: 2px solid #999999;
+	border-bottom: 2px solid #999999;
+	border-top-width: 0px;
+	border-left-width: 0px;
+    width : 10%;
+    border-radius: 10px;
+    box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+    font-weight:bold;
+    border-color: rgb(141, 191, 211);
+}
+
+.box3{
+    display: block;
+	background-color: rgb(17, 24, 87);
+	color: white;
+	font-family: Arial, sans-serif;
+    text-align : center;
+    margin:auto;
+	font-size: 20px;
+	padding: 7px 4px;
+	margin: auto;
+	border-right: 2px solid #6793c5;
+	border-bottom: 2px solid #6793c5;
+	border-top-width: 0px;
+	border-left-width: 0px;
+    width : 10%;
+    border-radius: 100px;
+    box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+    font-weight:bold;
+    border-color: rgb(141, 191, 211);
+}
+
 .login{
     background-color: rgb(17, 24, 87);
     color : white;
@@ -35,7 +77,7 @@ body{
     border-color: white;
 }
 
-a {
+.ar {
 	display: block;
 	background-color: #9cb6dd;
 	color: rgb(22, 42, 71);
@@ -55,7 +97,7 @@ a {
     font-weight:bold;
 }
 
-a:hover
+.ar:hover
 {
 	color: navy;
 	border: 3px solid white;

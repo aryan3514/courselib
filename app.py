@@ -31,8 +31,11 @@ def adminpage_1():
     whatToDo=''
     subject_selected=''
     inst_selected=''
+
     if request.method == 'POST':
+
         if 'subject go' in request.form:
+
             if(request.form['subject_selection']=='' and request.form['subject_selection2']=='select'):
                     whatToDo='nothing'
             elif(request.form['subject_selection']==''):
@@ -42,6 +45,7 @@ def adminpage_1():
                 subject_selected = request.form['subject_selection']
                 whatToDo='get instructors'
             print("subject : ",subject_selected)
+
         if 'instructor go' in request.form:
             if(request.form['instructor_selection']=='' and request.form['instructor_selection2']=='select'):
                     whatToDo='nothing'
@@ -55,6 +59,7 @@ def adminpage_1():
     inst_list = searchInstsForSub(subject_selected)
     abb_list = getAllSubAbbreviation()
     return render_template('admin_page_1.html', subject_abb_list=abb_list, instructor_list=inst_list, sub=subject_selected, inst=inst_selected)
+
 
 @app.route('/adminpage/2', methods=['GET', 'POST'])
 def adminpage_2():
