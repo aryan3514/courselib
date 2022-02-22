@@ -64,17 +64,48 @@ def adminpage_1():
 @app.route('/adminpage/2', methods=['GET', 'POST'])
 def adminpage_2():
     load_logged_in_admin()
+    courses_selected=''
     course_selected=''
     if request.method == 'POST':
         if 'course go' in request.form:
             if(request.form['course_selection']==''):
-                course_selected=''
+                courses_selected=''
             else:
-                course_selected=request.form['course_selection']
+                courses_selected=request.form['course_selection']
+        else:
+            course_selected=request.form['select a course']
+            print('course : ', course_selected)
+            return redirect(url_for('adminpage_2_course', course=course_selected))
     course_list=[]
-    if course_selected!='':
-        course_list = getAllCourseswithCommonStart(course_selected)
+    if courses_selected!='':
+        course_list = getAllCourseswithCommonStart(courses_selected)
     return render_template('admin_page_2.html', courses=course_list)
+
+@app.route('/adminpage/2/<course>', methods=['GET', 'POST'])
+def adminpage_2_course(course):
+    load_logged_in_admin()
+    course_off_selected=''
+    course_off_list=getAllCourseOff(course)
+    if request.method == 'POST':
+        if 'course offering go' in request.form:
+            if(request.form['course_off_selection']=='select'):
+                course_off_selected=''
+            else:
+                course_off_selected=request.form['course_off_selection']
+            print("course off : ", course_off_selected)
+    return render_template('admin_page_2_course.html', course=course, course_off_list=course_off_list, course_off_selected=course_off_selected)
+
+
+def getAllCourseOff(course_name):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+    WITH relevant_course_uuid as (select uuid from courses where name=%s)
+    , relevant_course_off_name as (select name, term_code from relevant_course_uuid join course_offerings on course_offerings.course_uuid=relevant_course_uuid.uuid)
+    select * from relevant_course_off_name;
+    """
+    cur.execute(q, (course_name,))
+    return cur.fetchall()
 
 def getAllCourseswithCommonStart(start):
     conn = db.start_db()
@@ -95,7 +126,15 @@ def getAllSubAbbreviation():
 def searchInstsForSub(sub):
     conn = db.start_db()
     cur = conn.cursor()
-    cur.execute("WITH relevant_code as (select code from subjects where abbreviation = %s), relevant_course_off_uuid as (select course_offering_uuid from relevant_code join subject_memberships on relevant_code.code=subject_memberships.subject_code), relevant_sec_id as (select uuid from relevant_course_off_uuid join sections on relevant_course_off_uuid.course_offering_uuid=sections.course_offering_uuid), relevant_inst_id as (select instructor_id, count(instructor_id) from relevant_sec_id join teachings on relevant_sec_id.uuid=teachings.section_uuid group by instructor_id), relevant_instructors as (select name, id from relevant_inst_id join instructors on relevant_inst_id.instructor_id=instructors.id order by name) select * from relevant_instructors", (sub,))
+    q = """
+    WITH relevant_code as (select code from subjects where abbreviation = %s),
+    relevant_course_off_uuid as (select course_offering_uuid from relevant_code join subject_memberships on relevant_code.code=subject_memberships.subject_code), 
+    relevant_sec_id as (select uuid from relevant_course_off_uuid join sections on relevant_course_off_uuid.course_offering_uuid=sections.course_offering_uuid), 
+    relevant_inst_id as (select instructor_id, count(instructor_id) from relevant_sec_id join teachings on relevant_sec_id.uuid=teachings.section_uuid group by instructor_id), 
+    relevant_instructors as (select name, id from relevant_inst_id join instructors on relevant_inst_id.instructor_id=instructors.id order by name) 
+    select * from relevant_instructors
+    """
+    cur.execute(q, (sub,))
     return cur.fetchall()
 
 

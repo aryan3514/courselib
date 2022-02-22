@@ -22,11 +22,9 @@
 	</form>
 
 	{% for x in courses %}
-	<div>
-		<button type="submit">
-			<p>{{ x[0] }}</p>
-		</button>
-	</div>
+		<form  action="" method="POST">
+			<button type="submit" name="select a course" value="{{x[0]}}">{{x[0]}}</button>
+		</form>
 	{% endfor %}
 </div>
 {% endblock %}
