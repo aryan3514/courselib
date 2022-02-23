@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Admin Page - Part 5{% endblock %}</h1>
+  
+{% endblock %}
+
+
+{% block content %}
+<h3><table>
+		<form action="" method="POST">
+          	<td>
+				<label for="subject_selection">
+					Select the Subject:
+			</label>
+				<select name="subject_selection">
+					<option>Select the subject name</option>
+					{% for x in subject_list %}
+					  <option>
+						{{ x[0] }}
+					  </option>
+					{% endfor %}
+				  </select>
+				  
+				<br><br>
+              <input type="text" name="subject_selection2" 
+                value="{{ request.form['subject_selection2'] }}" 
+                placeholder="New Subject Name">
+              </input>
+			  <input type="text" name="subject_selection3" 
+                value="{{ request.form['subject_selection3'] }}" 
+                placeholder="New Subject Code">
+              </input>
+			  <button type="submit" name="subject go">
+				Submit Changes
+			  </button>
+          	</td>
+        </form>
+    </table>
+</h3>
+{% endblock %}

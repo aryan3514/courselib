@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Admin Page - Part 4{% endblock %}</h1>
+  
+{% endblock %}
+
+
+{% block content %}
+<h3><table>
+		<form action="" method="POST">
+          	<td>
+				<label for="instructor_selection">
+					Select the Instructor:
+			</label>
+				<select name="instructor_selection">
+					<option>Select the instructor name</option>
+					{% for x in instructor_list %}
+					  <option>
+						{{ x[0] }}
+					  </option>
+					{% endfor %}
+				  </select>
+				  
+				<br><br>
+              <input type="text" name="instructor_selection2" 
+                value="{{ request.form['instructor_selection2'] }}" 
+                placeholder="New Instructor Name">
+              </input>
+			  <input type="text" name="instructor_selection3" 
+                value="{{ request.form['instructor_selection3'] }}" 
+                placeholder="New Instructor Code">
+              </input>
+			  <button type="submit" name="instructor go">
+				Submit Changes
+			  </button>
+          	</td>
+        </form>
+    </table>
+</h3>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Admin Page - Part 3{% endblock %}</h1>
+  
+{% endblock %}
+
+
+{% block content %}
+<div>
+	<form action="" method="POST">
+		<label for="instructor_selection">
+	        Instructor :
+	    </label>
+	    <input type="text" name="instructor_selection" 
+			value="{{ request.form['instructor_selection'] }}" 
+			placeholder="search">
+		</input>
+		<button type="submit" name="instructor go">
+			Go
+		</button>
+	</form>
+
+	{% for x in instructors %}
+	<div>
+		<button type="submit">
+			<p>{{ x[0] }}</p>
+		</button>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

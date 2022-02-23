@@ -23,6 +23,12 @@ def adminpage():
             return redirect(url_for('adminpage_1'))
         if 'part 2' in request.form:
             return redirect(url_for('adminpage_2'))
+        if 'part 3' in request.form:
+            return redirect(url_for('adminpage_3'))
+        if 'part 4' in request.form:
+            return redirect(url_for('adminpage_4'))
+        if 'part 5' in request.form:
+            return redirect(url_for('adminpage_5'))
     return render_template('admin_page.html')
 
 @app.route('/adminpage/1', methods=['GET', 'POST'])
@@ -73,17 +79,77 @@ def adminpage_2():
                 course_selected=request.form['course_selection']
     course_list=[]
     if course_selected!='':
-        course_list = getAllCourseswithCommonStart(course_selected)
+        course_list = getAllCourseswithCommonStart(course_selected.lower())
     return render_template('admin_page_2.html', courses=course_list)
+
+@app.route('/adminpage/3', methods=['GET', 'POST'])
+def adminpage_3():
+    load_logged_in_admin()
+    instructor_selected=''
+    if request.method == 'POST':
+        if 'instructor go' in request.form:
+            if(request.form['instructor_selection']==''):
+                instructor_selected=''
+            else:
+                instructor_selected=request.form['instructor_selection']
+    instructor_list=[]
+    if instructor_selected!='':
+        instructor_list = getAllInstructorswithCommonStart(instructor_selected.lower())
+    return render_template('admin_page_3.html', instructors=instructor_list)
+
+
+@app.route('/adminpage/4', methods=['GET', 'POST'])
+def adminpage_4():
+    load_logged_in_admin()
+    inst_selected=''
+    inst_newname = ''
+    inst_newcode = ''
+    if request.method == 'POST':
+        if 'instructor go' in request.form:
+            
+            inst_selected = request.form['instructor_selection2']
+
+            inst_newname = request.form['instructor_selection']
+
+            inst_newcode = request.form['instructor_selection3']
+            print("instructor : ",inst_selected)
+    inst_list = getAllInstructorswithCommonStart("")
+    #changeInstructorName(inst_selected, inst_newname)
+    #return something useful like success or failure
+    print("rondi", inst_selected, inst_newname, inst_newcode)
+    return render_template('admin_page_4.html', inst=inst_selected,instructor_list=inst_list)
+
+
+@app.route('/adminpage/5', methods=['GET', 'POST'])
+def adminpage_5():
+    load_logged_in_admin()
+    sub_selected=''
+    sub_newname = ''
+    sub_newcode = ''
+    if request.method == 'POST':
+        if 'subject go' in request.form:
+            
+            sub_selected = request.form['subject_selection2']
+
+            sub_newname = request.form['subject_selection']
+
+            sub_newcode = request.form['subject_selection3']
+            print("instructor : ",sub_selected)
+    sub_list = getAllSubjectswithCommonStart("")
+    #changeInstructorName(inst_selected, inst_newname)
+    #return something useful like success or failure
+    print("rondi", sub_selected, sub_newname, sub_newcode)
+    return render_template('admin_page_5.html',subject_list=sub_list)
+
 
 def getAllCourseswithCommonStart(start):
     conn = db.start_db()
     cur = conn.cursor()
     print("start : ", start)
     q = """
-    SELECT courses.name FROM courses WHERE NAME LIKE %s
+    SELECT DISTINCT courses.name FROM courses WHERE LOWER(name) LIKE %s
     """
-    cur.execute(q, (start+'%',))
+    cur.execute(q, ('%' + start+'%',))
     return cur.fetchall()
 
 def getAllSubAbbreviation():
@@ -92,7 +158,33 @@ def getAllSubAbbreviation():
     cur.execute("SELECT abbreviation from subjects")
     return cur.fetchall()
 
+def getAllInstructorswithCommonStart(start):
+    conn = db.start_db()
+    cur = conn.cursor()
+    print("start : ", start)
+    q = """
+    SELECT instructors.name FROM instructors WHERE LOWER(name) LIKE %s
+    """
+    cur.execute(q, ('%'+start+'%',))
+    return cur.fetchall()
+
+def getAllSubjectswithCommonStart(start):
+    conn = db.start_db()
+    cur = conn.cursor()
+    print("start : ", start)
+    q = """
+    SELECT subjects.name FROM subjects WHERE LOWER(name) LIKE %s
+    """
+    cur.execute(q, ('%'+start+'%',))
+    return cur.fetchall()
+
 def searchInstsForSub(sub):
+    conn = db.start_db()
+    cur = conn.cursor()
+    cur.execute("WITH relevant_code as (select code from subjects where abbreviation = %s), relevant_course_off_uuid as (select course_offering_uuid from relevant_code join subject_memberships on relevant_code.code=subject_memberships.subject_code), relevant_sec_id as (select uuid from relevant_course_off_uuid join sections on relevant_course_off_uuid.course_offering_uuid=sections.course_offering_uuid), relevant_inst_id as (select instructor_id, count(instructor_id) from relevant_sec_id join teachings on relevant_sec_id.uuid=teachings.section_uuid group by instructor_id), relevant_instructors as (select name, id from relevant_inst_id join instructors on relevant_inst_id.instructor_id=instructors.id order by name) select * from relevant_instructors", (sub,))
+    return cur.fetchall()
+
+def changeInstructorName(inst_selected, inst_newname):
     conn = db.start_db()
     cur = conn.cursor()
     cur.execute("WITH relevant_code as (select code from subjects where abbreviation = %s), relevant_course_off_uuid as (select course_offering_uuid from relevant_code join subject_memberships on relevant_code.code=subject_memberships.subject_code), relevant_sec_id as (select uuid from relevant_course_off_uuid join sections on relevant_course_off_uuid.course_offering_uuid=sections.course_offering_uuid), relevant_inst_id as (select instructor_id, count(instructor_id) from relevant_sec_id join teachings on relevant_sec_id.uuid=teachings.section_uuid group by instructor_id), relevant_instructors as (select name, id from relevant_inst_id join instructors on relevant_inst_id.instructor_id=instructors.id order by name) select * from relevant_instructors", (sub,))
