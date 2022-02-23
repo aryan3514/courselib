@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<br>
+<br>
+<h1 class="box4">{% block title %}Change Room Information{% endblock %}</h1>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
+
+{% endblock %}
+
+
+{% block content %}
+<h3>
+    <form action="" method="POST">
+      <td>
+        <div class = "arr">{{room}}</div>
+        <br>
+        <label class="inplabels" for="username">New Facility Code</label>
+        <input class="inpbuts" type="text" name="room_selection"
+          value="{{ request.form['room_selection'] }}" placeholder="New Facility Code">
+        </input>
+        <br>
+        <label class="inplabels" for="username">New Room Code</label>
+        <input class="inpbuts" type="text" name="room_selection2"
+          value="{{ request.form['room_selection2'] }}" placeholder="New Room Code">
+        </input>
+        <br><br>
+        <button class="subbut" type="submit" name="room go">
+          Submit Changes
+        </button>
+      </td>
+    </form>
+</h3>
+{% endblock %}

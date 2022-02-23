@@ -33,6 +33,8 @@ def adminpage():
             return redirect(url_for('adminpage_4'))
         if 'part 5' in request.form:
             return redirect(url_for('adminpage_5'))
+        if 'part 6' in request.form:
+            return redirect(url_for('adminpage_6'))
     return render_template('admin_page.html')
 
 
@@ -142,7 +144,7 @@ def adminpage_4():
             return redirect(url_for('adminpage_4_instructor', instructor=inst_selected))
     inst_list = []
     if insts_selected != '':
-        inst_list = getAllInstructorswithCommonStart(insts_selected)
+        inst_list = getAllInstructorswithCommonStart(insts_selected.lower())
     return render_template('admin_page_4.html', instructors=inst_list)
 
 
@@ -178,7 +180,7 @@ def adminpage_5():
             return redirect(url_for('adminpage_5_subject', subject=sub_selected))
     sub_list = []
     if subs_selected != '':
-        sub_list = getAllSubjectswithCommonStart(subs_selected)
+        sub_list = getAllSubjectswithCommonStart(subs_selected.lower())
     return render_template('admin_page_5.html', subjects=sub_list)
 
 
@@ -198,6 +200,42 @@ def adminpage_5_subject(subject):
     return render_template('admin_page_5_subject.html', subject=subject)
 
 
+@app.route('/adminpage/6', methods=['GET', 'POST'])
+def adminpage_6():
+    load_logged_in_admin()
+    rooms_selected = ''
+    room_selected = ''
+    if request.method == 'POST':
+        if 'room go' in request.form:
+            if(request.form['room_selection'] == ''):
+                rooms_selected = ''
+            else:
+                rooms_selected = request.form['room_selection']
+        else:
+            room_selected = request.form['select a room']
+            print('room : ', room_selected)
+            return redirect(url_for('adminpage_6_room', room=room_selected))
+    room_list = []
+    if rooms_selected != '':
+        room_list = getAllRooms(rooms_selected.lower())
+    return render_template('admin_page_6.html', rooms=room_list)
+
+
+@app.route('/adminpage/6/<room>', methods=['GET', 'POST'])
+def adminpage_6_room(room):
+    load_logged_in_admin()
+    room_newname = ''
+    room_newcode = ''
+    room_newabbr = ''
+    if request.method == 'POST':
+        if 'room go' in request.form:
+            room_newname = request.form['room_selection']
+            room_newcode = request.form['room_selection2']
+            room_newabbr = request.form['room_selection3']
+
+            
+    return render_template('admin_page_6_room.html', room=room)
+
 
 # HELPER FUNCTIONS
 #
@@ -212,6 +250,15 @@ def adminpage_5_subject(subject):
 #
 #
 #
+
+
+def getAllRooms():
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+    SELECT facility.code || ' - ' || room.code FROM rooms
+    """
+    return cur.fetchall()
 
 
 def getAllCourseOff(course_name):
