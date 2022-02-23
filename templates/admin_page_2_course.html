@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Admin Page - Course{% endblock %}</h1>
+  
+{% endblock %}
+
+
+{% block content %}
+<div>
+	<form action="" method="POST">
+		<select name="course_off_selection">
+        	<option>select</option>
+    		{% for x in course_off_list %}
+    			<option>
+    				{{ x[0] }} - {{x[1]}}
+    			</option>
+    		{% endfor %}
+    	</select>
+		<button type="submit" name="course offering go">
+			Go
+		</button>
+	</form>
+	<div>Course : {{course}}</div>
+	<div>Course offering : {{course_off_selected}}</div>
+</div>
+{% endblock %}
