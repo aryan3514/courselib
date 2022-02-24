@@ -9,19 +9,37 @@
 {% block content %}
 <div>
 	<form action="" method="POST">
-		<select name="course_off_selection">
-        	<option>select</option>
-    		{% for x in course_off_list %}
+		<select name="term_selection">
+        	<option>select term</option>
+    		{% for x in term_list %}
     			<option>
-    				{{ x[0] }} - {{x[1]}}
+    				{{x[0]}}
     			</option>
     		{% endfor %}
     	</select>
-		<button type="submit" name="course offering go">
+		<button type="submit" name="term go">
 			Go
 		</button>
 	</form>
 	<div>Course : {{course}}</div>
-	<div>Course offering : {{course_off_selected}}</div>
+	<div>Term : {{term_selected}}</div>
+	{% if course_off=="" %}
+		<div> Course offering : </div>
+	{% else %}
+		<div>Course offering : {{course_off[0]}}</div>
+	{% endif %}
+	<br>
+	{% if courseOffDetails %}
+		<div>Instructors teaching : </div>
+	{% endif %}
+	{% for x in courseOffDetails %}
+		<div>
+			<button type="submit" name="details clicked" onclick="g.inst_detail='1'">Details</button>
+			<text name="click on instructor">{{x[3]}}</text>
+			{% if g.inst_detail %}
+			<div>asdf</div>
+			{% endif %}
+		</div>
+	{% endfor %}
 </div>
 {% endblock %}

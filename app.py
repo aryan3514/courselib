@@ -84,25 +84,55 @@ def adminpage_2():
 @app.route('/adminpage/2/<course>', methods=['GET', 'POST'])
 def adminpage_2_course(course):
     load_logged_in_admin()
-    course_off_selected=''
-    course_off_list=getAllCourseOff(course)
+    term_selected=''
+    term_list=getAllCourseOffTerms(course)
     if request.method == 'POST':
-        if 'course offering go' in request.form:
-            if(request.form['course_off_selection']=='select'):
-                course_off_selected=''
+        if 'term go' in request.form:
+            if(request.form['term_selection']=='select term'):
+                term_selected=''
             else:
-                course_off_selected=request.form['course_off_selection']
-            print("course off : ", course_off_selected)
-    return render_template('admin_page_2_course.html', course=course, course_off_list=course_off_list, course_off_selected=course_off_selected)
+                term_selected=request.form['term_selection']
+            print("term : ", term_selected, ", course : ", course)
+    course_off=''
+    courseOffDetails = []
+    if term_selected!='':
+        course_off = getCourseOffFromTerm(term_selected, course)
+        courseOffDetails = getCourseOffSectionsInstructorsScheduleGradesInfo(term_selected, course_off)
+        print("Details : ", courseOffDetails)
+    return render_template('admin_page_2_course.html', course=course, term_list=term_list, term_selected=term_selected, course_off=course_off, courseOffDetails=courseOffDetails)
 
 
-def getAllCourseOff(course_name):
+def getCourseOffSectionsInstructorsScheduleGradesInfo(term_code, course_off_name):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+    WITH a as (select number as sec_number, course_offerings.uuid, course_offerings.name as course_offering_name, sections.uuid as sec_uuid, section_type, room_uuid, schedule_uuid from course_offerings join sections on course_offerings.uuid=sections.course_offering_uuid and course_offerings.name=%s and term_code=%s and room_uuid!='null')
+    , aa as (select sec_number, uuid, course_offering_name, instructor_id, section_type, room_uuid, schedule_uuid from a join teachings on section_uuid=sec_uuid)
+    , aaa as (select sec_number, uuid, course_offering_name, instructors.name as instructor_name, section_type, room_uuid, schedule_uuid from aa join instructors on instructors.id=instructor_id)
+    , aaaa as (select sec_number, aaa.uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, schedule_uuid from aaa join rooms on rooms.uuid=room_uuid)
+    , aaaaa as (select sec_number, aaaa.uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, start_time, end_time, mon, tues, wed, thurs, fri, sat, sun from aaaa join schedules on schedules.uuid=schedule_uuid)
+    , final_course_off_sections_instructors_schedule_grades_info as (select sec_number, uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, start_time, end_time, mon, tues, wed, thurs, fri, sat, sun, a_count, ab_count, b_count, bc_count, c_count, d_count, f_count, s_count, u_count, cr_count, n_count, p_count, i_count, nw_count, nr_count, other_count from aaaaa join grade_distributions on section_number=sec_number and course_offering_uuid=uuid)
+    select * from final_course_off_sections_instructors_schedule_grades_info;
+    """
+    cur.execute(q, (course_off_name,term_code))
+    return cur.fetchall()
+
+def getCourseOffFromTerm(term_code, course_name):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+    SELECT course_offerings.name from course_offerings join courses on course_offerings.course_uuid=courses.uuid and courses.name=%s and term_code=%s
+    """
+    cur.execute(q, (course_name,term_code))
+    return cur.fetchone()
+
+def getAllCourseOffTerms(course_name):
     conn = db.start_db()
     cur = conn.cursor()
     q = """
     WITH relevant_course_uuid as (select uuid from courses where name=%s)
-    , relevant_course_off_name as (select name, term_code from relevant_course_uuid join course_offerings on course_offerings.course_uuid=relevant_course_uuid.uuid)
-    select * from relevant_course_off_name;
+    , relevant_term as (select term_code from relevant_course_uuid join course_offerings on course_offerings.course_uuid=relevant_course_uuid.uuid)
+    select * from relevant_term;
     """
     cur.execute(q, (course_name,))
     return cur.fetchall()
