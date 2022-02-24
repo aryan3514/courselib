@@ -41,6 +41,8 @@ def adminpage():
             return redirect(url_for('adminpage_8'))
         if 'part 9' in request.form:
             return redirect(url_for('adminpage_9'))
+        if 'part 10' in request.form:
+            return redirect(url_for('adminpage_10'))
     return render_template('admin_page.html')
 
 
@@ -271,7 +273,36 @@ def adminpage_9():
     return render_template('admin_page_9.html')
 
 
+@app.route('/adminpage/10', methods=['GET', 'POST'])
+def adminpage_10():
+    load_logged_in_admin()
+    courses_selected = ''
+    course_selected = ''
+    if request.method == 'POST':
+        if 'course go' in request.form:
+            if(request.form['course_selection'] == ''):
+                courses_selected = ''
+            else:
+                courses_selected = request.form['course_selection']
+        else:
+            course_selected = request.form['select a course']
+            return redirect(url_for('adminpage_10_course', course=course_selected))
+    course_list = []
 
+    if courses_selected != '':
+        course_list = getAllCourseswithCommonStart(courses_selected.lower())
+    return render_template('admin_page_10.html', courses=course_list)
+
+
+@app.route('/adminpage/10/<course>', methods=['GET', 'POST'])
+def adminpage_10_course(course):
+    load_logged_in_admin()
+    course_newname = ''
+    if request.method == 'POST':
+        if 'course go' in request.form:
+            course_newname = request.form['course_selection']
+            
+    return render_template('admin_page_10_course.html', course=course)
 
 # HELPER FUNCTIONS
 #
