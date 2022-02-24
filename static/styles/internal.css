@@ -176,3 +176,19 @@
   .container {
     padding: 2px 16px;
   }
+
+.dropdown
+{
+    display: block;
+    padding:8px;
+    font-weight:bold;
+    font-size : 16px;
+    font-family: Arial;
+    margin:auto;
+    text-align: center;
+    width : 40%;
+    border-radius : 10px;
+    color: rgb(41, 55, 100);
+    background-color :rgb(192, 201, 228);
+    box-shadow:0 0 2px 2px rgba(0, 0, 0, 0.226);
+}

@@ -180,6 +180,7 @@ def schedules_course(course):
     allInfo = ''
     showInst = "No"
     showAllInfo="No"
+    showOld = "Yes"
     if request.method == 'POST':
         if 'course offering go' in request.form:
             if(request.form['course_off_selection'] == 'select'):
@@ -189,14 +190,19 @@ def schedules_course(course):
                 instForCourseOffTerm = getInstForCourseOffTerm(course_off_term_selected)
                 showInst="Yes"
             print("course off : ", course_off_term_selected)
+            return render_template('admin_page_2_course.html',showOld="No", course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
+
         if 'inst go' in request.form:
             courseOffTerm = request.form['course_off_term']
             inst_sec_number = request.form['inst_select']
             allInfo = getAllInfo(courseOffTerm, inst_sec_number)
-            showInst="Yes"
+            showInst="No"
             showAllInfo="Yes"
+            showOld = "No"
             print("debug : ", request.form['course_off_term'], request.form['inst_select'])
-    return render_template('admin_page_2_course.html', course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
+            #return render_template('admin_page_2_course.html',showOld=showOld, course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
+
+    return render_template('admin_page_2_course.html',showOld=showOld, course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
 
 def getInstForCourseOffTerm(offTerm):
     conn = db.start_db()

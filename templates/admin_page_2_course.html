@@ -2,45 +2,62 @@
 
 {% block header %}
   <h1>{% block title %}Admin Page - Course{% endblock %}</h1>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
   
 {% endblock %}
 
 
 {% block content %}
 <div>
+	{% if showOld=="Yes" %}
+	<div class = "arr">{{course}}</div>
+	<br><br>
 	<form action="" method="POST">
-		<select name="course_off_selection">
-        	<option>select offering and term</option>
+		<select class="dropdown" name="course_off_selection">
+			
+        	<option>Select the course offering and term</option>
+			
     		{% for x in course_off_list %}
-    			<option>
+			
+    			<option >
     				{{ x[0] }} - {{x[1]}}
     			</option>
+				<br>
     		{% endfor %}
+
     	</select>
-		<button type="submit" name="course offering go">
-			Go
+		<br><br>
+		<button class="subbut" type="submit" name="course offering go">
+			Select
 		</button>
 	</form>
 	<br>
-	<div>Course : {{course}}</div>
+	{% endif%}
+	
 	<br>
 	<div>
 		{% if showInst=="Yes" %}
 			<form action="" method="POST">
-				<label> Select Required Instructor : </label>
-				<select name="course_off_term">
-					<option placeholder="select">{{course_off_term_selected}}</option>
-				</select>
-				<select name="inst_select">
-					<option>select instructor and section number</option>
+				<select class="arr" name="course_off_term">
+					<option>{{course_off_term_selected}}</option>
+				</select><br>
+				<br>
+				<label class = "hupd"> Select Required Instructor and Section Number</label>
+				<br>
+				<br>
+				<select class="dropdown" name="inst_select">
+					<option>Select Instructor and Section Number</option>
 					{% for x in instForCourseOffTerm %}
 	    				<option>
 	    					{{x[1]}}
 	    				</option>
 	    			{% endfor %}
 				</select>
-				<button type="submit" name="inst go">Go</button>
+				<br>
+				<br>
+				<button class = "subbut" type="submit" name="inst go">Search</button>
 			</form>
+			{% endif %}
 			{% if showAllInfo=="Yes" %}
 				<br>
 				<div>Course Offering - Term Code : {{allInfo[2]}}</div>
@@ -94,7 +111,7 @@
 				<div>NR : {{allInfo[30]}}</div>
 				<div>Others : {{allInfo[31]}}</div>
 			{% endif %}
-		{% endif %}
+		
 	</div>
 </div>
 {% endblock %}
