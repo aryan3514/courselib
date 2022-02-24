@@ -260,6 +260,7 @@ def adminpage_4():
     inst_list = []
     if insts_selected != '':
         inst_list = getAllInstructorswithCommonStart(insts_selected.lower())
+    print("here")
     return render_template('admin_page_4.html', instructors=inst_list)
 
 
