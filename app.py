@@ -30,7 +30,11 @@ def adminhomepage():
             return redirect(url_for('admin_subjects'))
         if 'part 4' in request.form:
             return redirect(url_for('admin_rooms'))
+        if 'part 5' in request.form:
+            return redirect(url_for('schedules_for_students'))
     return render_template('admin_homepage.html')
+
+
 
 
 @app.route('/admin_courses', methods=['GET', 'POST'])
@@ -145,8 +149,8 @@ def adminpage_1():
     return render_template('admin_page_1.html', subject_abb_list=abb_list, instructor_list=inst_list, sub=subject_selected, inst=inst_selected)
 
 
-@app.route('/adminpage/2', methods=['GET', 'POST'])
-def adminpage_2():
+@app.route('/schedules', methods=['GET', 'POST'])
+def schedules_for_students():
     load_logged_in_admin()
     courses_selected = ''
     course_selected = ''
@@ -159,27 +163,66 @@ def adminpage_2():
         else:
             course_selected = request.form['select a course']
             print('course : ', course_selected)
-            return redirect(url_for('adminpage_2_course', course=course_selected))
+            return redirect(url_for('schedules_course', course=course_selected))
     course_list = []
     if courses_selected != '':
         course_list = getAllCourseswithCommonStart(courses_selected)
     return render_template('admin_page_2.html', courses=course_list)
 
 
-@app.route('/adminpage/2/<course>', methods=['GET', 'POST'])
-def adminpage_2_course(course):
+@app.route('/schedules/<course>', methods=['GET', 'POST'])
+def schedules_course(course):
     load_logged_in_admin()
-    course_off_selected = ''
+    course_off_term_selected = ''
     course_off_list = getAllCourseOff(course)
+    instForCourseOffTerm = []
+    allInfo = ''
+    showInst = "No"
+    showAllInfo="No"
     if request.method == 'POST':
         if 'course offering go' in request.form:
             if(request.form['course_off_selection'] == 'select'):
-                course_off_selected = ''
+                course_off_term_selected = ''
             else:
-                course_off_selected = request.form['course_off_selection']
-            print("course off : ", course_off_selected)
-    return render_template('admin_page_2_course.html', course=course, course_off_list=course_off_list, course_off_selected=course_off_selected)
+                course_off_term_selected = request.form['course_off_selection']
+                instForCourseOffTerm = getInstForCourseOffTerm(course_off_term_selected)
+                showInst="Yes"
+            print("course off : ", course_off_term_selected)
+        if 'inst go' in request.form:
+            courseOffTerm = request.form['course_off_term']
+            inst_sec_number = request.form['inst_select']
+            allInfo = getAllInfo(courseOffTerm, inst_sec_number)
+            showInst="Yes"
+            showAllInfo="Yes"
+            print("debug : ", request.form['course_off_term'], request.form['inst_select'])
+    return render_template('admin_page_2_course.html', course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
 
+def getInstForCourseOffTerm(offTerm):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+    WITH a as (select CONCAT(name,' - ',term_code) as course_off_name_term, sections.uuid as sec_uuid, number as sec_number from course_offerings join sections on course_offerings.uuid=sections.course_offering_uuid and CONCAT(name,' - ',term_code)=%s and room_uuid!='null')
+    , aa as (select course_off_name_term, sec_number, instructor_id from a join teachings on section_uuid=sec_uuid)
+    , relevant_instructors as (select course_off_name_term, CONCAT(instructors.name, ' - ', sec_number) as instructor_name_sec  from aa join instructors on instructors.id=instructor_id)
+    select * from relevant_instructors order by instructor_name_sec;
+    """
+    cur.execute(q, (offTerm,))
+    return cur.fetchall()
+
+def getAllInfo(courseOffTerm, inst_sec_number):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q="""
+    WITH a as (select number as sec_number, course_offerings.uuid, CONCAT(name,' - ',term_code) as course_offering_name, sections.uuid as sec_uuid, section_type, room_uuid, schedule_uuid from course_offerings join sections on course_offerings.uuid=sections.course_offering_uuid and CONCAT(name,' - ',term_code)=%s and room_uuid!='null')
+    , aa as (select sec_number, uuid, course_offering_name, instructor_id, section_type, room_uuid, schedule_uuid from a join teachings on section_uuid=sec_uuid)
+    , aaa as (select sec_number, uuid, course_offering_name, CONCAT(instructors.name, ' - ', sec_number) as instructor_name, section_type, room_uuid, schedule_uuid from aa join instructors on instructors.id=instructor_id and CONCAT(instructors.name, ' - ', sec_number)=%s)
+    , aaaa as (select sec_number, aaa.uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, schedule_uuid from aaa join rooms on rooms.uuid=room_uuid)
+    , aaaaa as (select sec_number, aaaa.uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, start_time, end_time, mon, tues, wed, thurs, fri, sat, sun from aaaa join schedules on schedules.uuid=schedule_uuid)
+    , final_course_off_sections_instructors_schedule_grades_info as (select sec_number, uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, start_time, end_time, mon, tues, wed, thurs, fri, sat, sun, a_count, ab_count, b_count, bc_count, c_count, d_count, f_count, s_count, u_count, cr_count, n_count, p_count, i_count, nw_count, nr_count, other_count from aaaaa join grade_distributions on section_number=sec_number and course_offering_uuid=uuid)
+    select * from final_course_off_sections_instructors_schedule_grades_info;
+    """
+    cur.execute(q, (courseOffTerm, inst_sec_number,))
+    return cur.fetchone()
 
 @app.route('/adminpage/3', methods=['GET', 'POST'])
 def adminpage_3():
