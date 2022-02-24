@@ -18,29 +18,26 @@
 	        Search for Room 
 	    </label>
 		<br><br>
-	    <input class="inpbuts" type="text" name="room_selection" 
-			value="{{ request.form['room_selection'] }}" 
-			placeholder="search">
-		</input>
-		<br>
-		<button class="subbut" type="submit" name="room go">
-			Search
-		</button>
+	    <select name="room_selection">
+			<option>select</option>
+				{% for x in room_list %}
+					<option>
+						{{ x[0] }}
+					</option>
+				{% endfor %}
+			</select>
+
+			<input type="text" name="room_selection2" 
+			value="{{ request.form['room_selection2'] }}" 
+			placeholder="New Facility Code">
+		  </input>
+		  <input type="text" name="room_selection3" 
+			value="{{ request.form['room_selection3'] }}" 
+			placeholder="New Room Code">
+		  </input>
+		  <button type="submit" name="room go">
+			Submit Changes
+		  </button>
 	</form>
-
-	<br>
-	<br>
-	<br>
-	<br>
-	<label class="resbutton" for="room_selection">
-		Results
-	</label>
-	<br>
-
-	{% for x in rooms %}
-		<form  action="" method="POST">
-			<button class="entries" type="submit" name="select a room" value="{{x[0]}}">{{x[0]}}</button><br>
-		</form>
-	{% endfor %}
 </div>
 {% endblock %}

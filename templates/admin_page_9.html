@@ -3,7 +3,7 @@
 {% block header %}
 <br>
 <br>
-<h1 class="box4">{% block title %}Change Room Information{% endblock %}</h1>
+<h1 class="box4">{% block title %}Add New Room{% endblock %}</h1>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
 
 {% endblock %}
@@ -13,7 +13,6 @@
 <h3>
     <form action="" method="POST">
       <td>
-        <div class = "arr">{{room}}</div>
         <br>
         <label class="inplabels" for="username">New Facility Code</label>
         <input class="inpbuts" type="text" name="room_selection"
@@ -26,7 +25,7 @@
         </input>
         <br><br>
         <button class="subbut" type="submit" name="room go">
-          Submit Changes
+          Add Room
         </button>
       </td>
     </form>
