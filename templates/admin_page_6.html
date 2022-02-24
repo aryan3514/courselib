@@ -35,9 +35,15 @@
 			value="{{ request.form['room_selection3'] }}" 
 			placeholder="New Room Code">
 		  </input>
-		  <button type="submit" name="room go">
-			Submit Changes
-		  </button>
+		  <br>
+        <button class="subbut" type="submit" name="room go">
+          Submit Changes
+        </button>
+        <label class="inplabels" for="username">OR</label>
+        <button class="subbut" type="submit" name="room kill">
+          Delete Room
+        </button>
+        <br>
 	</form>
 </div>
 {% endblock %}

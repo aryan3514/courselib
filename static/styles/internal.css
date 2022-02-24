@@ -1,21 +1,18 @@
 .box4{
     display: block;
-	background-color: rgb(17, 24, 87);
-	color: white;
-	font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
-    text-align : center;
-    margin:auto;
-	font-size: 20px;
-	padding: 10px;
-	margin: auto;
-	border-top-width: 0px;
-	border-left-width: 0px;
-    width : 50%;
-    border-radius: 100px;
-    box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+    padding:10px;
+    border: 2px rgb(11, 75, 3) solid;
     font-weight:bold;
-    border-color: rgb(141, 191, 211);
-    box-shadow:0 0 5px 5px rgba(0, 0, 0, 0.226);
+    font-size : 24px;
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+    margin:auto;
+    text-align: center;
+    width : 100%;
+    border-radius: 0px;
+    background-color: rgb(41, 55, 100);
+    color :rgb(255, 255, 255);
+    box-shadow:0 0 2px 2px rgba(0, 0, 0, 0.226);
+    border-color: white;
 }
 
 .inplabels{
@@ -34,11 +31,11 @@
     padding:10px;
     border:0;
     font-weight:bold;
-    font-size : 25px;
+    font-size : 18px;
     font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
     margin:auto;
     text-align: center;
-    width : 80%;
+    width : 40%;
     border-radius: 100px;
     background-color: rgb(216, 223, 245);
     border: 2px rgb(10, 25, 53) solid;
@@ -96,6 +93,7 @@
     font-weight:bold;
 }
 
+
 .subbut{
     display: block;
     padding:10px;
@@ -113,7 +111,25 @@
 
 
 
-.subbut:hover
+.returntohomepage{
+    display: block;
+    padding:10px;
+    border:0;
+    font-weight:bold;
+    font-size : 16px;
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+    margin:auto;
+    text-align: center;
+    width : 20%;
+    border-radius: 100px;
+    background-color: rgb(17, 24, 87);;
+    color: white;
+    text-decoration: none;
+}
+
+
+
+.returntohomepage:hover
 {
 	color: black;
 	border: 3px solid white;
@@ -121,6 +137,14 @@
     box-shadow:0 0 5px 5px rgba(0, 0, 0, 0.226);
     
 }
+
+.subbut:hover
+{
+	color: navy;
+	border: 3px solid white;
+    background: #5bb3d6bb;
+}
+
 
 .entries{
     display: block;

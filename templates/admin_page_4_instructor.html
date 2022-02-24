@@ -22,12 +22,18 @@
         <br>
         <label class="inplabels" for="username">New Instructor Code</label>
         <input class="inpbuts" type="text" name="instructor_selection2"
-          value="{{ request.form['instructor_selection2'] }}" placeholder="New instructor Code">
+          value="{{ request.form['instructor_selection2'] }}" placeholder="New Instructor Code">
         </input>
-        <br><br>
+        <br>
+        <br>
         <button class="subbut" type="submit" name="instructor go">
           Submit Changes
         </button>
+        <label class="inplabels" for="username">OR</label>
+        <button class="subbut" type="submit" name="instructor kill">
+          Delete Instructor
+        </button>
+        <br>
       </td>
     </form>
 </h3>

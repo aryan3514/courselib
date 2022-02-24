@@ -7,20 +7,21 @@
 
 </head>
 
-<nav class="box1">
-
-  <h1>CourseLib</h1>
-
-</nav>
-<br><br>
 
 <nav>
   
     {% if g.user %}
+    <a class="box1" href="{{ url_for('adminhomepage') }}">CourseLib</a>
+        <br>
       <span class = "box3" >{{ g.user[0] }}</span>
+      <br>
+      <br>
         <a class="box2" href="{{ url_for('logout') }}">Log Out</a>
     {% else %}
       <nav>
+        <p class="box1" href="{{ url_for('adminhomepage') }}">CourseLib</p>
+        <br><br>
+        
       <a class="ar" href="{{ url_for('adminlogin') }}">Admin Log In</a>
       <p>                                  </p>
       <a class="ar" href="{{ url_for('studentlogin') }}">Student Log In</a>

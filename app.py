@@ -1,3 +1,4 @@
+import re
 from flask import (Flask, g, flash, redirect,
                    render_template, request, session, url_for)
 import db
@@ -225,11 +226,14 @@ def adminpage_4_instructor(instructor):
     inst_newname = ''
     inst_newcode = ''
     if request.method == 'POST':
+        if 'instructor kill' in request.form:
+            print("kill", instructor)
+            return render_template('delete_dump.html', whodel=instructor)
         if 'instructor go' in request.form:
-
             sub_newname = request.form['instructor_selection']
 
             sub_newcode = request.form['instructor_selection2']
+            return render_template('change_done.html')
     return render_template('admin_page_4_instructor.html', instructor=instructor)
 
 
@@ -262,10 +266,14 @@ def adminpage_5_subject(subject):
     sub_newcode = ''
     sub_newabbr = ''
     if request.method == 'POST':
+        if 'subject kill' in request.form:
+            print("kill", subject)
+            return render_template('delete_dump.html', whodel=subject)
         if 'subject go' in request.form:
             sub_newname = request.form['subject_selection']
             sub_newcode = request.form['subject_selection2']
             sub_newabbr = request.form['subject_selection3']
+            return render_template('change_done.html')
 
             
     return render_template('admin_page_5_subject.html', subject=subject)
@@ -279,10 +287,13 @@ def adminpage_6():
     room_newfacility = ''
     room_newroom = ' '
     if request.method == 'POST':
+        if 'room kill' in request.form:
+            return render_template('delete_dump.html', whodel = "the given room")
         if 'room go' in request.form:
             room_selected = request.form['room_selection']
             room_newfacility = request.form['room_selection2']
             room_newroom = request.form['room_selection3']
+            return render_template('change_done.html')
     room_list = getAllRooms()
     print(room_selected, room_newfacility, room_newroom)
     return render_template('admin_page_6.html', room_list=room_list, room = room_selected)
