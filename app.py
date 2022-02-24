@@ -18,6 +18,69 @@ def studentpage():
     load_logged_in_student()
     return render_template('student_page.html')
 
+@app.route('/adminhomepage', methods=['GET', 'POST'])
+def adminhomepage():
+    load_logged_in_admin()
+    if request.method == 'POST':
+        if 'part 1' in request.form:
+            return redirect(url_for('admin_courses'))
+        if 'part 2' in request.form:
+            return redirect(url_for('admin_instructors'))
+        if 'part 3' in request.form:
+            return redirect(url_for('admin_subjects'))
+        if 'part 4' in request.form:
+            return redirect(url_for('admin_rooms'))
+    return render_template('admin_homepage.html')
+
+
+@app.route('/admin_courses', methods=['GET', 'POST'])
+def admin_courses():
+    load_logged_in_admin()
+    if request.method == 'POST':
+        if 'search' in request.form:
+            return redirect(url_for('adminpage_1'))
+        if 'update' in request.form:
+            return redirect(url_for('adminpage_10'))
+        if 'add' in request.form:
+            return redirect(url_for('adminpage_10'))
+    return render_template('admin_courses.html')
+
+@app.route('/admin_instructors', methods=['GET', 'POST'])
+def admin_instructors():
+    load_logged_in_admin()
+    if request.method == 'POST':
+        if 'search' in request.form:
+            return redirect(url_for('adminpage_1'))
+        if 'update' in request.form:
+            return redirect(url_for('adminpage_4'))
+        if 'add' in request.form:
+            return redirect(url_for('adminpage_7'))
+    return render_template('admin_instructors.html')
+
+@app.route('/admin_subjects', methods=['GET', 'POST'])
+def admin_subjects():
+    load_logged_in_admin()
+    if request.method == 'POST':
+        if 'search' in request.form:
+            return redirect(url_for('adminpage_1'))
+        if 'update' in request.form:
+            return redirect(url_for('adminpage_5'))
+        if 'add' in request.form:
+            return redirect(url_for('adminpage_8'))
+    return render_template('admin_subjects.html')
+
+@app.route('/admin_rooms', methods=['GET', 'POST'])
+def admin_rooms():
+    load_logged_in_admin()
+    if request.method == 'POST':
+        if 'search' in request.form:
+            return redirect(url_for('adminpage_1'))
+        if 'update' in request.form:
+            return redirect(url_for('adminpage_6'))
+        if 'add' in request.form:
+            return redirect(url_for('adminpage_9'))
+    return render_template('admin_rooms.html')
+
 
 @app.route('/adminpage', methods=['GET', 'POST'])
 def adminpage():
@@ -423,7 +486,7 @@ def adminlogin():
         if error is None:
             session.clear()
             session['user_id'] = username
-            return redirect(url_for('adminpage'))
+            return redirect(url_for('adminhomepage'))
         flash(error)
     return render_template('admin_login.html')
 

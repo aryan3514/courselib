@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Admin Page{% endblock %}</h1>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
+  
+{% endblock %}
+
+
+{% block content %}
+<form action="" method="POST">
+	<button type="submit" name="search">
+        Search for Instructor
+    </button>
+    <button type="submit" name="update">
+        Update Instructor Information
+    </button>
+    <button type="submit" name="add">
+        Add Instructor Information
+    </button>
+</form>
+{% endblock %}

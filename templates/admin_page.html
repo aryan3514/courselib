@@ -2,6 +2,7 @@
 
 {% block header %}
   <h1>{% block title %}Admin Page{% endblock %}</h1>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
   
 {% endblock %}
 
@@ -35,8 +36,10 @@
     <button type="submit" name="part 8">
         Add New Subject
     </button>
-    <button type="submit" name="part 9">
-        Add New Room
+
+    <button class="card" type="submit" name="part 9">
+        <div class="container">
+            <h4><b>Add New Room</b></h4>
     </button>
     
 </form>
