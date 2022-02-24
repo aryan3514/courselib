@@ -58,20 +58,40 @@
 				<button class = "subbut" type="submit" name="inst go">Search</button>
 			</form>
 			{% endif %}
+			
 			{% if showAllInfo=="Yes" %}
 				<br>
-				<div>Course Offering - Term Code : {{allInfo[2]}}</div>
-				<div>Instructor Name - Section Number : {{allInfo[3]}}</div>
+				<div class = "resb">Course Offering - Term Code</div> 
+				<div class = "info"> {{allInfo[2]}}</div>
 				<br>
-				<div>Section Type : {{allInfo[4]}}</div>
-				<div>Facility Code : {{allInfo[5]}}</div>
-				<div>Room Code : {{allInfo[6]}}</div>
-				<div>Start Time : {{allInfo[7]}}</div>
-				<div>End Time : {{allInfo[8]}}</div>
 				<br>
-				<div>Classes on : </div>
+				<br>
+				<div class = "resb">Instructor Name - Section Number </div>
+				<div class ="info"> {{allInfo[3]}}</div>
+				<br>
+				<br>
+				<br>
+				<div class = "resb">Section Type</div>
+				<div class ="info">{{allInfo[4]}}</div>
+				<br>
+				<br>
+				<br>
+				<div class="resb">Facility Code </div> 
+				<div class ="info"> {{allInfo[5]}}</div>
+				<br><br><br>
+				<div class="resb">Room Code </div> 
+				<div class ="info"> {{allInfo[6]}}</div>
+				<br><br><br>
+				<div class="resb">Start Time </div> 
+				<div class ="info">{{allInfo[7]}}</div>
+				<br><br><br>
+				<div class="resb">End Time </div>
+				<div class ="info"> {{allInfo[8]}}</div>
+				<br><br><br>
+				<div class="resbutton">Classes on : </div><br>
+				<div  class ="grade">
 				{% if allInfo[9]==true %}
-					<text>Monday </text>
+					<text >Monday </text>
 				{% endif %}
 				{% if allInfo[10]==true %}
 					<text>Tuesday </text>
@@ -91,25 +111,28 @@
 				{% if allInfo[15]==true %}
 					<text>Sunday </text>
 				{% endif %}
+				</div>
 				<br>
 				<br>
-				<div>Grades Statistics(count of grades) - </div>
-				<div>A : {{allInfo[16]}}</div>
-				<div>AB : {{allInfo[17]}}</div>
-				<div>B : {{allInfo[18]}}</div>
-				<div>BC : {{allInfo[19]}}</div>
-				<div>C : {{allInfo[20]}}</div>
-				<div>D : {{allInfo[21]}}</div>
-				<div>F : {{allInfo[22]}}</div>
-				<div>S : {{allInfo[23]}}</div>
-				<div>U : {{allInfo[24]}}</div>
-				<div>CR : {{allInfo[25]}}</div>
-				<div>N : {{allInfo[26]}}</div>
-				<div>P : {{allInfo[27]}}</div>
-				<div>I : {{allInfo[28]}}</div>
-				<div>NW : {{allInfo[29]}}</div>
-				<div>NR : {{allInfo[30]}}</div>
-				<div>Others : {{allInfo[31]}}</div>
+				<div>
+				<div class="resbutton">Grades Statistics(count of grades) </div><br>
+				<div class="grade">A : {{allInfo[16]}}</div><br>
+				<div class="grade">AB : {{allInfo[17]}}</div><br>
+				<div class="grade">B : {{allInfo[18]}}</div><br>
+				<div class="grade">BC : {{allInfo[19]}}</div><br>
+				<div class="grade">C : {{allInfo[20]}}</div><br>
+				<div class="grade">D : {{allInfo[21]}}</div><br>
+				<div class="grade">F : {{allInfo[22]}}</div><br>
+				<div class="grade">S : {{allInfo[23]}}</div><br>
+				<div class="grade"> U : {{allInfo[24]}}</div><br>
+				<div class="grade">CR : {{allInfo[25]}}</div><br>
+				<div class="grade">N : {{allInfo[26]}}</div><br>
+				<div class="grade">P : {{allInfo[27]}}</div><br>
+				<div class="grade">I : {{allInfo[28]}}</div><br>
+				<div class="grade">NW : {{allInfo[29]}}</div><br>
+				<div class="grade">NR : {{allInfo[30]}}</div><br>
+				<div class="grade">Others : {{allInfo[31]}}</div><br>
+				</div>
 			{% endif %}
 		
 	</div>
