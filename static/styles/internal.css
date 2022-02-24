@@ -1,0 +1,154 @@
+.box4{
+    display: block;
+	background-color: rgb(17, 24, 87);
+	color: white;
+	font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+    text-align : center;
+    margin:auto;
+	font-size: 20px;
+	padding: 10px;
+	margin: auto;
+	border-top-width: 0px;
+	border-left-width: 0px;
+    width : 50%;
+    border-radius: 100px;
+    box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+    font-weight:bold;
+    border-color: rgb(141, 191, 211);
+    box-shadow:0 0 5px 5px rgba(0, 0, 0, 0.226);
+}
+
+.inplabels{
+    display: block;
+    padding:10px;
+    border:0;
+    font-weight:bold;
+    font-size : 16px;
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+    margin:auto;
+    text-align: center;
+}
+
+.hupd{
+    display: block;
+    padding:10px;
+    border:0;
+    font-weight:bold;
+    font-size : 25px;
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+    margin:auto;
+    text-align: center;
+    width : 80%;
+    border-radius: 100px;
+    background-color: rgb(216, 223, 245);
+    border: 2px rgb(10, 25, 53) solid;
+}
+
+.resbutton{
+    display: block;
+    padding:8px;
+    border: 2px rgb(11, 75, 3) solid;
+    font-weight:bold;
+    font-size : 20px;
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+    margin:auto;
+    text-align: center;
+    width : 100%;
+    border-radius: 0px;
+    background-color: rgb(41, 55, 100);
+    color :rgb(255, 255, 255);
+    box-shadow:0 0 2px 2px rgba(0, 0, 0, 0.226);
+    border-color: white;
+}
+
+
+
+.inpbuts{
+    display: block;
+    padding:10px;
+    border:0;
+    box-shadow:0 0 15px 4px rgba(0,0,0,0.06);
+    border: 1px solid black;
+    border-radius: 100px;
+    font-size: 15px;
+    width: 25%;
+    margin:auto;
+    
+}
+
+.arr {
+	display: block;
+	background-color: rgb(192, 201, 228);
+	color: rgb(22, 42, 71);
+	text-decoration: none;
+	font-family: Arial, sans-serif;
+    text-align : center;
+	font-size: 1em;
+	padding: 7px 4px;
+	margin: auto;
+	border-right: 2px solid #999999;
+	border-bottom: 2px solid #999999;
+	border-top-width: 0px;
+	border-left-width: 0px;
+    width : 100%;
+    border-radius: 50px;
+    box-shadow:0 0 5px 5px rgba(0, 0, 0, 0.226);
+    font-weight:bold;
+}
+
+.subbut{
+    display: block;
+    padding:10px;
+    border:0;
+    font-weight:bold;
+    font-size : 16px;
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+    margin:auto;
+    text-align: center;
+    width : 10%;
+    border-radius: 100px;
+    background-color: rgb(17, 24, 87);;
+    color: rgb(216, 223, 245);
+}
+
+
+
+.subbut:hover
+{
+	color: black;
+	border: 3px solid white;
+    background: #548ecfbb;
+    box-shadow:0 0 5px 5px rgba(0, 0, 0, 0.226);
+    
+}
+
+.entries{
+    display: block;
+    padding:10px;
+    border:0;
+    font-weight:bold;
+    font-size : 14px;
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+    margin:auto;
+    text-align: center;
+    width : 30%;
+    border-radius: 100px;
+    background-color: rgb(216, 223, 245);
+}
+
+
+.card {
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+  }
+  
+  /* On mouse-over, add a deeper shadow */
+  .card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+  
+  /* Add some padding inside the card container */
+  .container {
+    padding: 2px 16px;
+  }

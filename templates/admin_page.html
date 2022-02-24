@@ -2,6 +2,7 @@
 
 {% block header %}
   <h1>{% block title %}Admin Page{% endblock %}</h1>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
   
 {% endblock %}
 
@@ -9,16 +10,37 @@
 {% block content %}
 <form action="" method="POST">
 	<button type="submit" name="part 1">
-        part 1
+        Part 1
     </button>
     <button type="submit" name="part 2">
-        part 2
+        Part 2
     </button>
     <button type="submit" name="part 3">
-        part 3
+        Part 3
     </button>
     <button type="submit" name="part 4">
-        part 4
+        Update Instructor Information
     </button>
+    <button type="submit" name="part 5">
+        Update Subject Information
+    </button>
+    <button type="submit" name="part 6">
+        Update Room Information
+    </button>
+    <button type="submit" name="part 10">
+        Update Course Information
+    </button>
+    <button type="submit" name="part 7">
+        Add New Instructor
+    </button>
+    <button type="submit" name="part 8">
+        Add New Subject
+    </button>
+
+    <button class="card" type="submit" name="part 9">
+        <div class="container">
+            <h4><b>Add New Room</b></h4>
+    </button>
+    
 </form>
 {% endblock %}

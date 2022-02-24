@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<br>
+<br>
+<h1 class="box4">{% block title %}Change Room Information{% endblock %}</h1>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<div>
+	<form action="" method="POST">
+		<br>
+		<br>
+		<br>
+		<label class="hupd" for="room_selection">
+	        Search for Room 
+	    </label>
+		<br><br>
+	    <select name="room_selection">
+			<option>select</option>
+				{% for x in room_list %}
+					<option>
+						{{ x[0] }}
+					</option>
+				{% endfor %}
+			</select>
+
+			<input type="text" name="room_selection2" 
+			value="{{ request.form['room_selection2'] }}" 
+			placeholder="New Facility Code">
+		  </input>
+		  <input type="text" name="room_selection3" 
+			value="{{ request.form['room_selection3'] }}" 
+			placeholder="New Room Code">
+		  </input>
+		  <button type="submit" name="room go">
+			Submit Changes
+		  </button>
+	</form>
+</div>
+{% endblock %}

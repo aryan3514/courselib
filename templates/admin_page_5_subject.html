@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<br>
+<br>
+<h1 class="box4">{% block title %}Change Subject Information{% endblock %}</h1>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
+
+{% endblock %}
+
+
+{% block content %}
+<h3>
+    <form action="" method="POST">
+      <td>
+        <div class = "arr">{{subject}}</div>
+        <br>
+        <label class="inplabels" for="username">New Subject Name</label>
+        <input class="inpbuts" type="text" name="subject_selection"
+          value="{{ request.form['subject_selection'] }}" placeholder="New Subject Name">
+        </input>
+        <br>
+        <label class="inplabels" for="username">New Subject Code</label>
+        <input class="inpbuts" type="text" name="subject_selection2"
+          value="{{ request.form['subject_selection2'] }}" placeholder="New Subject Code">
+        </input>
+        <br>
+        <label class="inplabels" for="username">New Subject Abbreviation</label>
+        <input class="inpbuts" type="text" name="subject_selection3"
+          value="{{ request.form['subject_selection3'] }}" placeholder="New Subject Abbreviation">
+        </input>
+        <br><br>
+        <button class="subbut" type="submit" name="subject go">
+          Submit Changes
+        </button>
+      </td>
+    </form>
+</h3>
+{% endblock %}
