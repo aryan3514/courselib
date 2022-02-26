@@ -1,22 +1,47 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Admin Page{% endblock %}</h1>
+  <br>
+  <br>
+<br>
+  <h1 class="box4">{% block title %}Subjects{% endblock %}</h1>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
+  <br>
+  <br>
   
 {% endblock %}
 
 
 {% block content %}
 <form action="" method="POST">
-	<button type="submit" name="search">
-        Search for Subject
-    </button>
-    <button type="submit" name="update">
-        Update/Delete Subject Information
-    </button>
-    <button type="submit" name="add">
-        Add New Subject
-    </button>
+	<div class="card">
+        
+        <button class="count" type="submit" name="search">
+            <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
+            <br>
+            Search for Subject
+        </button>
+        
+    </div>
+
+    <div class="card">
+        
+        <button class="count" type="submit" name="update">
+            <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
+            <br>
+            Update/Delete Subject
+        </button>
+        
+    </div>
+    
+    <div class="card">
+        
+        <button class="count" type="submit" name="add">
+            <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
+            <br>
+            Add Subject
+        </button>
+        
+    </div>
 </form>
 {% endblock %}

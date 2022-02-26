@@ -1,22 +1,49 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Admin Page{% endblock %}</h1>
+<br>
+<br>
+<br>
+  <h1 class="box4">{% block title %}Rooms{% endblock %}</h1>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
+<br>
+<br>
   
 {% endblock %}
 
 
 {% block content %}
 <form action="" method="POST">
-	<button type="submit" name="search">
-        Search for Rooms
-    </button>
-    <button type="submit" name="update">
-        Update/Delete Room Information
-    </button>
-    <button type="submit" name="add">
-        Add New Room
-    </button>
+
+
+    <div class="card">
+        
+        <button class="count" type="submit" name="search">
+            <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
+            <br>
+            Search for Room
+        </button>
+        
+    </div>
+
+    <div class="card">
+        
+        <button class="count" type="submit" name="update">
+            <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
+            <br>
+            Update/Delete Room Info.
+        </button>
+        
+    </div>
+    
+    <div class="card">
+        
+        <button class="count" type="submit" name="add">
+            <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
+            <br>
+            Add New Room
+        </button>
+        
+    </div>
 </form>
 {% endblock %}

@@ -1,0 +1,22 @@
+.subbut{
+    display: block;
+    padding:10px;
+    border:0;
+    font-weight:bold;
+    font-size : 16px;
+    font-family: Avantgarde, TeX Gyre Adventor, URW Gothic L, sans-serif;
+    margin:auto;
+    text-align: center;
+    width : 10%;
+    border-radius: 100px;
+    background-color: rgb(17, 24, 87);;
+    color: rgb(216, 223, 245);
+}
+
+
+.subbut:hover
+{
+	color: navy;
+	border: 3px solid white;
+    background: #5bb3d6bb;
+}
