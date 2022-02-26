@@ -100,11 +100,26 @@ CREATE TABLE IF NOT EXISTS teachings(
 	section_uuid text not null,
 
 	CONSTRAINT teachings_key PRIMARY KEY (instructor_id,section_uuid),
-	CONSTRAINT instructor_id_ref FOREIGN KEY (instructor_id) references instructors(id),
+	CONSTRAINT instructor_id_ref FOREIGN KEY (instructor_id) references instructors(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT section_uuid_ref FOREIGN KEY (section_uuid) references sections(uuid)
 	);
 
+-- run the following to add cascades :
 
+-- postgres=# ALTER table teachings drop constraint instructor_id_ref;
+-- postgres=# ALTER table teachings add CONSTRAINT instructor_id_ref FOREIGN KEY (instructor_id) references instructors(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+
+
+
+
+
+
+
+
+/*
 \COPY courses FROM 'courses.csv' DELIMITER ',' CSV HEADER;
 \COPY course_offerings FROM 'course_offerings.csv' DELIMITER ',' CSV HEADER;
 \COPY schedules FROM 'schedules.csv' DELIMITER ',' CSV HEADER;
@@ -115,3 +130,10 @@ CREATE TABLE IF NOT EXISTS teachings(
 \COPY instructors FROM 'instructors.csv' DELIMITER ',' CSV HEADER;
 \COPY subject_memberships FROM 'subject_memberships.csv' DELIMITER ',' CSV HEADER;
 \COPY teachings FROM 'teachings.csv' DELIMITER ',' CSV HEADER;
+
+*/
+
+
+
+
+
