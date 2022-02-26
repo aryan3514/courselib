@@ -332,3 +332,5 @@
     background-color: rgb(17, 24, 87);;
     color: rgb(216, 223, 245);
 }
+
+.grayscale { filter: grayscale(100%); }
