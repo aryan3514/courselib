@@ -248,7 +248,7 @@ def adminpage_3():
     return render_template('admin_page_3.html', instructors=instructor_list)
 
 
-@app.route('/adminpage/4', methods=['GET', 'POST'])
+@app.route('/instructors/updateOrDelete', methods=['GET', 'POST'])
 def adminpage_4():
     load_logged_in_admin()
     insts_selected = ''
@@ -270,7 +270,7 @@ def adminpage_4():
     return render_template('admin_page_4.html', instructors=inst_list)
 
 
-@app.route('/adminpage/4/<instructor>', methods=['GET', 'POST'])
+@app.route('/instructors/updateOrDelete/<instructor>', methods=['GET', 'POST'])
 def adminpage_4_instructor(instructor):
     load_logged_in_admin()
     inst_newname = ''
@@ -278,15 +278,45 @@ def adminpage_4_instructor(instructor):
     if request.method == 'POST':
         if 'instructor kill' in request.form:
             print("kill", instructor)
+            deleteInstructor(instructor)
             return render_template('delete_dump.html', whodel=instructor)
         if 'instructor go' in request.form:
             sub_newname = request.form['instructor_selection']
-
             sub_newcode = request.form['instructor_selection2']
+            previous_code = (getInstId(instructor))[0]
+            print("debug : ", sub_newname, sub_newcode, previous_code)
+            updateInstructor(sub_newname, sub_newcode, previous_code)
             return render_template('change_done.html')
     return render_template('admin_page_4_instructor.html', instructor=instructor)
 
+def deleteInstructor(inst_name):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        DELETE FROM instructors WHERE name=%s;
+        """
+    cur.execute(q, (inst_name,))
+    conn.commit()
+    cur.close()
 
+def getInstId(inst_name):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        SELECT id from instructors where name=%s;
+        """
+    cur.execute(q, (inst_name,))
+    return cur.fetchone()
+
+def updateInstructor(name, newCode, prevCode):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        UPDATE instructors SET id=%s, name=%s WHERE id=%s;
+        """
+    cur.execute(q, (newCode, name, prevCode,))
+    conn.commit()
+    cur.close()
 
 @app.route('/adminpage/5', methods=['GET', 'POST'])
 def adminpage_5():
