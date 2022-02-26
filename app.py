@@ -14,109 +14,122 @@ def main():
     return render_template('entry.html')
 
 
-@app.route('/studentpage')
-def studentpage():
+@app.route('/studenthomepage', methods=['GET', 'POST'])
+def studenthomepage():
     load_logged_in_student()
+    if request.method == 'POST':
+        if 'part 1' in request.form:
+            return redirect(url_for('admin_courses', privilegeLevel = 'student'))
+        if 'part 2' in request.form:
+            return redirect(url_for('admin_instructors', privilegeLevel = 'student'))
+        if 'part 3' in request.form:
+            return redirect(url_for('admin_subjects', privilegeLevel = 'student'))
+        if 'part 4' in request.form:
+            return redirect(url_for('admin_rooms', privilegeLevel = 'student'))
+        if 'part 5' in request.form:
+            return redirect(url_for('schedules_for_students', privilegeLevel = 'student'))
     return render_template('student_page.html')
+
 
 @app.route('/adminhomepage', methods=['GET', 'POST'])
 def adminhomepage():
     load_logged_in_admin()
     if request.method == 'POST':
         if 'part 1' in request.form:
-            return redirect(url_for('admin_courses'))
+            return redirect(url_for('admin_courses', privilegeLevel = 'admin'))
         if 'part 2' in request.form:
-            return redirect(url_for('admin_instructors'))
+            return redirect(url_for('admin_instructors', privilegeLevel = 'admin'))
         if 'part 3' in request.form:
-            return redirect(url_for('admin_subjects'))
+            return redirect(url_for('admin_subjects', privilegeLevel = 'admin'))
         if 'part 4' in request.form:
-            return redirect(url_for('admin_rooms'))
+            return redirect(url_for('admin_rooms', privilegeLevel = 'admin'))
         if 'part 5' in request.form:
-            return redirect(url_for('schedules_for_students'))
+            return redirect(url_for('schedules_for_students', privilegeLevel = 'admin'))
     return render_template('admin_homepage.html')
 
 
 
 
-@app.route('/admin_courses', methods=['GET', 'POST'])
-def admin_courses():
-    load_logged_in_admin()
-    if request.method == 'POST':
-        if 'search' in request.form:
-            return redirect(url_for('adminpage_1'))
-        if 'update' in request.form:
-            return redirect(url_for('adminpage_10'))
-        if 'add' in request.form:
-            return redirect(url_for('adminpage_10'))
-    return render_template('admin_courses.html')
+@app.route('/<privilegeLevel>/courses', methods=['GET', 'POST'])
+def admin_courses(privilegeLevel):
+    if(privilegeLevel=='admin'):
+        load_logged_in_admin()
+        if request.method == 'POST':
+            if 'search' in request.form:
+                return redirect(url_for('adminpage_1', privilegeLevel = 'admin'))
+            if 'update' in request.form:
+                return redirect(url_for('adminpage_10', privilegeLevel = 'admin'))
+            if 'add' in request.form:
+                return redirect(url_for('adminpage_10', privilegeLevel = 'admin'))
+    else:
+        load_logged_in_student()
+        if request.method == 'POST':
+            if 'search' in request.form:
+                return redirect(url_for('adminpage_1', privilegeLevel = 'student'))
+    return render_template('admin_courses.html', privilegeLevel=privilegeLevel)
 
-@app.route('/admin_instructors', methods=['GET', 'POST'])
-def admin_instructors():
-    load_logged_in_admin()
-    if request.method == 'POST':
-        if 'search' in request.form:
-            return redirect(url_for('adminpage_1'))
-        if 'update' in request.form:
-            return redirect(url_for('adminpage_4'))
-        if 'add' in request.form:
-            return redirect(url_for('adminpage_7'))
-    return render_template('admin_instructors.html')
+@app.route('/<privilegeLevel>/instructors', methods=['GET', 'POST'])
+def admin_instructors(privilegeLevel):
+    if(privilegeLevel=='admin'):
+        load_logged_in_admin()
+        if request.method == 'POST':
+            if 'search' in request.form:
+                return redirect(url_for('adminpage_1', privilegeLevel = 'admin'))
+            if 'update' in request.form:
+                return redirect(url_for('adminpage_4', privilegeLevel = 'admin'))
+            if 'add' in request.form:
+                return redirect(url_for('adminpage_7', privilegeLevel = 'admin'))
+    else:
+        load_logged_in_student()
+        if request.method == 'POST':
+            if 'search' in request.form:
+                return redirect(url_for('adminpage_1', privilegeLevel = 'student'))
+    return render_template('admin_instructors.html', privilegeLevel = privilegeLevel)
 
-@app.route('/admin_subjects', methods=['GET', 'POST'])
-def admin_subjects():
-    load_logged_in_admin()
-    if request.method == 'POST':
-        if 'search' in request.form:
-            return redirect(url_for('adminpage_1'))
-        if 'update' in request.form:
-            return redirect(url_for('adminpage_5'))
-        if 'add' in request.form:
-            return redirect(url_for('adminpage_8'))
-    return render_template('admin_subjects.html')
+@app.route('/<privilegeLevel>/subjects', methods=['GET', 'POST'])
+def admin_subjects(privilegeLevel):
+    if(privilegeLevel=='admin'):
+        load_logged_in_admin()
+        if request.method == 'POST':
+            if 'search' in request.form:
+                return redirect(url_for('adminpage_1', privilegeLevel = 'admin'))
+            if 'update' in request.form:
+                return redirect(url_for('adminpage_5', privilegeLevel = 'admin'))
+            if 'add' in request.form:
+                return redirect(url_for('adminpage_8', privilegeLevel = 'admin'))
+    else:
+        if request.method == 'POST':
+            load_logged_in_student()
+            if 'search' in request.form:
+                return redirect(url_for('adminpage_1', privilegeLevel = 'student'))
+    return render_template('admin_subjects.html', privilegeLevel=privilegeLevel)
 
-@app.route('/admin_rooms', methods=['GET', 'POST'])
-def admin_rooms():
-    load_logged_in_admin()
-    if request.method == 'POST':
-        if 'search' in request.form:
-            return redirect(url_for('adminpage_1'))
-        if 'update' in request.form:
-            return redirect(url_for('adminpage_6'))
-        if 'add' in request.form:
-            return redirect(url_for('adminpage_9'))
-    return render_template('admin_rooms.html')
-
-
-@app.route('/adminpage', methods=['GET', 'POST'])
-def adminpage():
-    load_logged_in_admin()
-    if request.method == 'POST':
-        if 'part 1' in request.form:
-            return redirect(url_for('adminpage_1'))
-        if 'part 2' in request.form:
-            return redirect(url_for('adminpage_2'))
-        if 'part 3' in request.form:
-            return redirect(url_for('adminpage_3'))
-        if 'part 4' in request.form:
-            return redirect(url_for('adminpage_4'))
-        if 'part 5' in request.form:
-            return redirect(url_for('adminpage_5'))
-        if 'part 6' in request.form:
-            return redirect(url_for('adminpage_6'))
-        if 'part 7' in request.form:
-            return redirect(url_for('adminpage_7'))
-        if 'part 8' in request.form:
-            return redirect(url_for('adminpage_8'))
-        if 'part 9' in request.form:
-            return redirect(url_for('adminpage_9'))
-        if 'part 10' in request.form:
-            return redirect(url_for('adminpage_10'))
-    return render_template('admin_page.html')
+@app.route('/<privilegeLevel>/rooms', methods=['GET', 'POST'])
+def admin_rooms(privilegeLevel):
+    if(privilegeLevel=='admin'):
+        load_logged_in_admin()
+        if request.method == 'POST':
+            if 'search' in request.form:
+                return redirect(url_for('adminpage_1', privilegeLevel = 'admin'))
+            if 'update' in request.form:
+                return redirect(url_for('adminpage_6', privilegeLevel = 'admin'))
+            if 'add' in request.form:
+                return redirect(url_for('adminpage_9', privilegeLevel = 'admin'))
+    else:
+        load_logged_in_student()
+        if request.method == 'POST':
+            if 'search' in request.form:
+                return redirect(url_for('adminpage_1', privilegeLevel = 'student'))
+    return render_template('admin_rooms.html', privilegeLevel=privilegeLevel)
 
 
-@app.route('/adminpage/1', methods=['GET', 'POST'])
-def adminpage_1():
-    load_logged_in_admin()
+
+@app.route('/<privilegeLevel>/adminpage/1', methods=['GET', 'POST'])
+def adminpage_1(privilegeLevel):
+    if(privilegeLevel=='admin'):
+        load_logged_in_admin()
+    else:
+        load_logged_in_student()
     whatToDo = ''
     subject_selected = ''
     inst_selected = ''
@@ -150,9 +163,12 @@ def adminpage_1():
     return render_template('admin_page_1.html', subject_abb_list=abb_list, instructor_list=inst_list, sub=subject_selected, inst=inst_selected)
 
 
-@app.route('/schedules', methods=['GET', 'POST'])
-def schedules_for_students():
-    load_logged_in_admin()
+@app.route('/<privilegeLevel>/schedules', methods=['GET', 'POST'])
+def schedules_for_students(privilegeLevel):
+    if privilegeLevel=='admin':
+        load_logged_in_admin()
+    else:
+        load_logged_in_student()
     courses_selected = ''
     course_selected = ''
     if request.method == 'POST':
@@ -164,16 +180,19 @@ def schedules_for_students():
         else:
             course_selected = request.form['select a course']
             print('course : ', course_selected)
-            return redirect(url_for('schedules_course', course=course_selected))
+            return redirect(url_for('schedules_course', course=course_selected, privilegeLevel=privilegeLevel))
     course_list = []
     if courses_selected != '':
         course_list = getAllCourseswithCommonStart(courses_selected)
     return render_template('admin_page_2.html', courses=course_list)
 
 
-@app.route('/schedules/<course>', methods=['GET', 'POST'])
-def schedules_course(course):
-    load_logged_in_admin()
+@app.route('/<privilegeLevel>/schedules/<course>', methods=['GET', 'POST'])
+def schedules_course(course, privilegeLevel):
+    if privilegeLevel=='admin':
+        load_logged_in_admin()
+    else:
+        load_logged_in_student()
     course_off_term_selected = ''
     course_off_list = getAllCourseOff(course)
     instForCourseOffTerm = []
@@ -232,7 +251,7 @@ def getAllInfo(courseOffTerm, inst_sec_number):
     return cur.fetchone()
 
 @app.route('/adminpage/3', methods=['GET', 'POST'])
-def adminpage_3():
+def adminpage_3(privilegeLevel):
     load_logged_in_admin()
     instructor_selected = ''
     if request.method == 'POST':
@@ -248,8 +267,8 @@ def adminpage_3():
     return render_template('admin_page_3.html', instructors=instructor_list)
 
 
-@app.route('/instructors/updateOrDelete', methods=['GET', 'POST'])
-def adminpage_4():
+@app.route('/<privilegeLevel>/instructors/updateOrDelete', methods=['GET', 'POST'])
+def adminpage_4(privilegeLevel):
     load_logged_in_admin()
     insts_selected = ''
     inst_selected = ''
@@ -262,7 +281,7 @@ def adminpage_4():
         else:
             inst_selected = request.form['select a instructor']
             print('Instructor : ', inst_selected)
-            return redirect(url_for('adminpage_4_instructor', instructor=inst_selected))
+            return redirect(url_for('adminpage_4_instructor', instructor=inst_selected, privilegeLevel=privilegeLevel))
     inst_list = []
     if insts_selected != '':
         inst_list = getAllInstructorswithCommonStart(insts_selected.lower())
@@ -270,8 +289,8 @@ def adminpage_4():
     return render_template('admin_page_4.html', instructors=inst_list)
 
 
-@app.route('/instructors/updateOrDelete/<instructor>', methods=['GET', 'POST'])
-def adminpage_4_instructor(instructor):
+@app.route('/<privilegeLevel>/instructors/updateOrDelete/<instructor>', methods=['GET', 'POST'])
+def adminpage_4_instructor(instructor, privilegeLevel):
     load_logged_in_admin()
     inst_newname = ''
     inst_newcode = ''
@@ -318,8 +337,8 @@ def updateInstructor(name, newCode, prevCode):
     conn.commit()
     cur.close()
 
-@app.route('/adminpage/5', methods=['GET', 'POST'])
-def adminpage_5():
+@app.route('/<privilegeLevel>/adminpage/5', methods=['GET', 'POST'])
+def adminpage_5(privilegeLevel):
     load_logged_in_admin()
     subs_selected = ''
     sub_selected = ''
@@ -332,15 +351,15 @@ def adminpage_5():
         else:
             sub_selected = request.form['select a subject']
             print('subject : ', sub_selected)
-            return redirect(url_for('adminpage_5_subject', subject=sub_selected))
+            return redirect(url_for('adminpage_5_subject', subject=sub_selected, privilegeLevel=privilegeLevel))
     sub_list = []
     if subs_selected != '':
         sub_list = getAllSubjectswithCommonStart(subs_selected.lower())
     return render_template('admin_page_5.html', subjects=sub_list)
 
 
-@app.route('/adminpage/5/<subject>', methods=['GET', 'POST'])
-def adminpage_5_subject(subject):
+@app.route('/<privilegeLevel>/adminpage/5/<subject>', methods=['GET', 'POST'])
+def adminpage_5_subject(subject, privilegeLevel):
     load_logged_in_admin()
     sub_newname = ''
     sub_newcode = ''
@@ -360,8 +379,8 @@ def adminpage_5_subject(subject):
 
 
 
-@app.route('/adminpage/6', methods=['GET', 'POST'])
-def adminpage_6():
+@app.route('/<privilegeLevel>/adminpage/6', methods=['GET', 'POST'])
+def adminpage_6(privilegeLevel):
     load_logged_in_admin()
     room_selected = ''
     room_newfacility = ''
@@ -380,8 +399,8 @@ def adminpage_6():
 
 
 
-@app.route('/adminpage/7', methods=['GET', 'POST'])
-def adminpage_7():
+@app.route('/<privilegeLevel>/adminpage/7', methods=['GET', 'POST'])
+def adminpage_7(privilegeLevel):
     load_logged_in_admin()
     inst_newname = ''
     inst_newcode = ''
@@ -395,8 +414,8 @@ def adminpage_7():
     return render_template('admin_page_7.html')
 
 
-@app.route('/adminpage/8', methods=['GET', 'POST'])
-def adminpage_8():
+@app.route('/<privilegeLevel>/adminpage/8', methods=['GET', 'POST'])
+def adminpage_8(privilegeLevel):
     load_logged_in_admin()
     sub_newname = ''
     sub_newcode = ''
@@ -410,8 +429,8 @@ def adminpage_8():
     return render_template('admin_page_8.html')
 
 
-@app.route('/adminpage/9', methods=['GET', 'POST'])
-def adminpage_9():
+@app.route('/<privilegeLevel>/adminpage/9', methods=['GET', 'POST'])
+def adminpage_9(privilegeLevel):
     load_logged_in_admin()
     room_newname = ''
     room_newcode = ''
@@ -427,8 +446,8 @@ def adminpage_9():
     return render_template('admin_page_9.html')
 
 
-@app.route('/adminpage/10', methods=['GET', 'POST'])
-def adminpage_10():
+@app.route('/<privilegeLevel>/adminpage/10', methods=['GET', 'POST'])
+def adminpage_10(privilegeLevel):
     load_logged_in_admin()
     courses_selected = ''
     course_selected = ''
@@ -440,7 +459,7 @@ def adminpage_10():
                 courses_selected = request.form['course_selection']
         else:
             course_selected = request.form['select a course']
-            return redirect(url_for('adminpage_10_course', course=course_selected))
+            return redirect(url_for('adminpage_10_course', course=course_selected, privilegeLevel=privilegeLevel))
     course_list = []
 
     if courses_selected != '':
@@ -448,8 +467,8 @@ def adminpage_10():
     return render_template('admin_page_10.html', courses=course_list)
 
 
-@app.route('/adminpage/10/<course>', methods=['GET', 'POST'])
-def adminpage_10_course(course):
+@app.route('/<privilegeLevel>/adminpage/10/<course>', methods=['GET', 'POST'])
+def adminpage_10_course(course, privilegeLevel):
     load_logged_in_admin()
     course_newname = ''
     if request.method == 'POST':
@@ -602,7 +621,7 @@ def studentlogin():
         if error is None:
             session.clear()
             session['user_id'] = username
-            return redirect(url_for('studentpage'))
+            return redirect(url_for('studenthomepage'))
         flash(error)
     return render_template('student_login.html')
 

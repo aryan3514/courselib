@@ -1,8 +1,66 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Student Page{% endblock %}</h1>
+<br>
+<br>
+<br>
+  <h1 class="box4">{% block title %}Homepage{% endblock %}</h1>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
+<br>
+
 {% endblock %}
 
+
 {% block content %}
+<form action="" method="POST">
+    <div class="card">
+        
+        <button class="count" type="submit" name="part 1">
+            <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
+            <br>
+            Courses
+        </button>
+        
+    </div>
+
+    <div class="card">
+        
+        <button class="count" type="submit" name="part 2">
+            <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
+            <br>
+            Instructors
+        </button>
+        
+    </div>
+
+    <div class="card">
+        
+        <button class="count" type="submit" name="part 3">
+            <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
+            <br>
+            Subjects
+        </button>
+        
+    </div>
+     
+    <div class="card">
+        
+        <button class="count" type="submit" name="part 4">
+            <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
+            <br>
+            Rooms
+        </button>
+        
+    </div>
+
+    <div class="card">
+        
+        <button class="count" type="submit" name="part 5">
+            <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
+            <br>
+            Schedules
+        </button>
+        
+    </div>
+</form>
 {% endblock %}

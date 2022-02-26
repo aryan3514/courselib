@@ -24,24 +24,28 @@
         
     </div>
 
-    <div class="card">
-        
-        <button class="count" type="submit" name="update">
-            <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
-            <br>
-            Update/Delete Instructor
-        </button>
-        
-    </div>
+    {% if privilegeLevel=='admin' %}
+        <div class="card">
+            
+            <button class="count" type="submit" name="update">
+                <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
+                <br>
+                Update/Delete Instructor
+            </button>
+            
+        </div>
+    {% endif %}
     
-    <div class="card">
-        
-        <button class="count" type="submit" name="add">
-            <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
-            <br>
-            Add Instructor
-        </button>
-        
-    </div>
+    {% if privilegeLevel=='admin' %}
+        <div class="card">
+            
+            <button class="count" type="submit" name="add">
+                <img src="{{ url_for('static',filename='search.png') }}" class="cover"style="width:50%">
+                <br>
+                Add Instructor
+            </button>
+            
+        </div>
+    {% endif %}
 </form>
 {% endblock %}
