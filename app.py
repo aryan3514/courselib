@@ -55,7 +55,7 @@ def admin_instructors():
     load_logged_in_admin()
     if request.method == 'POST':
         if 'search' in request.form:
-            return redirect(url_for('adminpage_1'))
+            return redirect(url_for('search_instructor'))
         if 'update' in request.form:
             return redirect(url_for('adminpage_4'))
         if 'add' in request.form:
@@ -67,7 +67,7 @@ def admin_subjects():
     load_logged_in_admin()
     if request.method == 'POST':
         if 'search' in request.form:
-            return redirect(url_for('adminpage_1'))
+            return redirect(url_for('search_subject'))
         if 'update' in request.form:
             return redirect(url_for('adminpage_5'))
         if 'add' in request.form:
@@ -78,8 +78,6 @@ def admin_subjects():
 def admin_rooms():
     load_logged_in_admin()
     if request.method == 'POST':
-        if 'search' in request.form:
-            return redirect(url_for('adminpage_1'))
         if 'update' in request.form:
             return redirect(url_for('adminpage_6'))
         if 'add' in request.form:
@@ -87,31 +85,24 @@ def admin_rooms():
     return render_template('admin_rooms.html')
 
 
-@app.route('/adminpage', methods=['GET', 'POST'])
-def adminpage():
+@app.route('/search_instructor', methods=['GET', 'POST'])
+def search_instructor():
     load_logged_in_admin()
+    insts_selected = ''
+    inst_selected = ''
     if request.method == 'POST':
-        if 'part 1' in request.form:
-            return redirect(url_for('adminpage_1'))
-        if 'part 2' in request.form:
-            return redirect(url_for('adminpage_2'))
-        if 'part 3' in request.form:
-            return redirect(url_for('adminpage_3'))
-        if 'part 4' in request.form:
-            return redirect(url_for('adminpage_4'))
-        if 'part 5' in request.form:
-            return redirect(url_for('adminpage_5'))
-        if 'part 6' in request.form:
-            return redirect(url_for('adminpage_6'))
-        if 'part 7' in request.form:
-            return redirect(url_for('adminpage_7'))
-        if 'part 8' in request.form:
-            return redirect(url_for('adminpage_8'))
-        if 'part 9' in request.form:
-            return redirect(url_for('adminpage_9'))
-        if 'part 10' in request.form:
-            return redirect(url_for('adminpage_10'))
-    return render_template('admin_page.html')
+        if 'instructor go' in request.form:
+            if(request.form['instructor_selection'] == ''):
+                insts_selected = ''
+            else:
+                insts_selected = request.form['instructor_selection']
+    inst_list = []
+    if insts_selected != '':
+        inst_list = getAllInstructorswithCommonStart(insts_selected.lower())
+    print("here")
+    return render_template('search_instructor.html', instructors=inst_list)
+
+
 
 
 @app.route('/adminpage/1', methods=['GET', 'POST'])
@@ -318,6 +309,24 @@ def updateInstructor(name, newCode, prevCode):
     conn.commit()
     cur.close()
 
+
+@app.route('/search_subject', methods=['GET', 'POST'])
+def search_subject():
+    load_logged_in_admin()
+    subs_selected = ''
+    sub_selected = ''
+    if request.method == 'POST':
+        if 'subject go' in request.form:
+            if(request.form['subject_selection'] == ''):
+                subs_selected = ''
+            else:
+                subs_selected = request.form['subject_selection']
+    sub_list = []
+    if subs_selected != '':
+        sub_list = getAllSubjectswithCommonStart(subs_selected.lower())
+    return render_template('search_subject.html', subjects=sub_list)
+
+
 @app.route('/adminpage/5', methods=['GET', 'POST'])
 def adminpage_5():
     load_logged_in_admin()
@@ -518,7 +527,7 @@ def getAllInstructorswithCommonStart(start):
     cur = conn.cursor()
     print("start : ", start)
     q = """
-    SELECT instructors.name FROM instructors WHERE LOWER(name) LIKE %s
+    SELECT instructors.name, instructors.id FROM instructors WHERE LOWER(name) LIKE %s
     """
     cur.execute(q, ('%'+start+'%',))
     return cur.fetchall()
@@ -529,7 +538,7 @@ def getAllSubjectswithCommonStart(start):
     cur = conn.cursor()
     print("start : ", start)
     q = """
-    SELECT subjects.name FROM subjects WHERE LOWER(name) LIKE %s
+    SELECT subjects.name, subjects.code FROM subjects WHERE LOWER(name) LIKE %s
     """
     cur.execute(q, ('%'+start+'%',))
     return cur.fetchall()
