@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS teachings(
 	CONSTRAINT teachings_key PRIMARY KEY (instructor_id,section_uuid),
 	CONSTRAINT instructor_id_ref FOREIGN KEY (instructor_id) references instructors(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT section_uuid_ref FOREIGN KEY (section_uuid) references sections(uuid)
-	);
+);
 
 -- run the following to add cascades :
 

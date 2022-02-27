@@ -300,8 +300,13 @@ def adminpage_4_instructor(instructor, privilegeLevel):
             sub_newcode = request.form['instructor_selection2']
             previous_code = (getInstId(instructor))[0]
             print("debug : ", sub_newname, sub_newcode, previous_code)
-            updateInstructor(sub_newname, sub_newcode, previous_code)
-            return render_template('change_done.html')
+
+            if (ifInstCodeAlreadyExists(sub_newcode)==0):
+                updateInstructor(sub_newname, sub_newcode, previous_code)
+                return render_template('change_done.html')
+            else:
+                return render_template('notification.html', msg = 'Update Failed : Instructor ID already taken !')
+
     return render_template('admin_page_4_instructor.html', instructor=instructor)
 
 def deleteInstructor(inst_name):
@@ -322,6 +327,16 @@ def getInstId(inst_name):
         """
     cur.execute(q, (inst_name,))
     return cur.fetchone()
+
+def ifInstCodeAlreadyExists(newCode):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        SELECT * FROM instructors WHERE instructors.id = %s;
+        """
+    cur.execute(q, (newCode,))
+    conn.commit()
+    return len(cur.fetchall())
 
 def updateInstructor(name, newCode, prevCode):
     conn = db.start_db()
@@ -672,6 +687,7 @@ def load_logged_in_admin():
         cur.execute(
             'SELECT username FROM admin_info WHERE username = %s', (username,))
         g.user = cur.fetchone()
+        g.privilegeLevel = 'admin'
 
 
 def load_logged_in_student():
@@ -684,6 +700,7 @@ def load_logged_in_student():
         cur.execute(
             'SELECT username FROM student_login_info WHERE username = %s', (username,))
         g.user = cur.fetchone()
+        g.privilegeLevel = 'student'
 
 
 @app.route('/logout')
