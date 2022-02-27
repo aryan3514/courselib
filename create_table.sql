@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS rooms(
 
 
 CREATE TABLE IF NOT EXISTS instructors(
-	id bigint not NULL,
+	id text not NULL,
 	name text,
 	CONSTRAINT instructors_key PRIMARY KEY (id)
 	-- 	CONSTRAINT instructors_primary_key PRIMARY KEY (id)
@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS subject_memberships(
 
 -- ok
 CREATE TABLE IF NOT EXISTS teachings(
-	instructor_id bigint not null,
+	instructor_id text not null,
 	section_uuid text not null,
 
 	CONSTRAINT teachings_key PRIMARY KEY (instructor_id,section_uuid),
@@ -194,15 +194,15 @@ CREATE TABLE IF NOT EXISTS teachings(
 	-- CONSTRAINT instructor_id_foreign_key FOREIGN KEY (instructor_id) references instructors(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT section_uuid_ref FOREIGN KEY (section_uuid) references sections(uuid)
 	-- 	CONSTRAINT section_uuid_foreign_key FOREIGN KEY (section_uuid) references sections(uuid) ON UPDATE CASCADE ON DELETE CASCADE
-	);
+);
 
 
 
 -- ALTER table teachings drop constraint teachings_key;
 -- ALTER table teachings add CONSTRAINT teachings_primary_key PRIMARY KEY (instructor_id,section_uuid);
 
--- ALTER table teachings drop constraint instructor_id_ref;
--- ALTER table teachings add CONSTRAINT instructor_id_foreign_key FOREIGN KEY (instructor_id) references instructors(id) ON UPDATE CASCADE ON DELETE CASCADE;
+--ALTER table teachings drop constraint instructor_id_ref;
+--ALTER table teachings add CONSTRAINT instructor_id_foreign_key FOREIGN KEY (instructor_id) references instructors(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 -- ALTER table teachings drop constraint section_uuid_ref;
 -- ALTER table teachings add CONSTRAINT section_uuid_foreign_key FOREIGN KEY (section_uuid) references sections(uuid) ON UPDATE CASCADE ON DELETE CASCADE;

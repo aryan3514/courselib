@@ -32,14 +32,14 @@
 		Results
 	</label>
 	<br>
-    <div class =arr>Instructor Name ( Instructor ID)</div>
+    <div class =arr>Instructor Name - Instructor ID</div>
     <br>
     <br>
 
 
 	{% for x in instructors %}
 		<form  action="" method="POST">
-			<button class="entries" type="submit" name="select a instructor" value="{{x[0]}}">{{x[0]}}  ( {{x[1]}} )</button><br>
+			<button class="entries" type="submit" name="select a instructor" value="{{x[0]}}">{{x[0]}}</button><br>
 		</form>
 	{% endfor %}
 </div>
