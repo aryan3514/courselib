@@ -120,6 +120,22 @@ def admin_rooms(privilegeLevel):
 
 
 
+
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+
 @app.route('/<privilegeLevel>/adminpage/1', methods=['GET', 'POST'])
 def adminpage_1(privilegeLevel):
     if(privilegeLevel=='admin'):
@@ -159,92 +175,7 @@ def adminpage_1(privilegeLevel):
     return render_template('admin_page_1.html', subject_abb_list=abb_list, instructor_list=inst_list, sub=subject_selected, inst=inst_selected)
 
 
-@app.route('/<privilegeLevel>/schedules', methods=['GET', 'POST'])
-def schedules_for_students(privilegeLevel):
-    if privilegeLevel=='admin':
-        load_logged_in_admin()
-    else:
-        load_logged_in_student()
-    courses_selected = ''
-    course_selected = ''
-    if request.method == 'POST':
-        if 'course go' in request.form:
-            if(request.form['course_selection'] == ''):
-                courses_selected = ''
-            else:
-                courses_selected = request.form['course_selection']
-        else:
-            course_selected = request.form['select a course']
-            print('course : ', course_selected)
-            return redirect(url_for('schedules_course', course=course_selected, privilegeLevel=privilegeLevel))
-    course_list = []
-    if courses_selected != '':
-        course_list = getAllCourseswithCommonStart(courses_selected)
-    return render_template('admin_page_2.html', courses=course_list)
 
-
-@app.route('/<privilegeLevel>/schedules/<course>', methods=['GET', 'POST'])
-def schedules_course(course, privilegeLevel):
-    if privilegeLevel=='admin':
-        load_logged_in_admin()
-    else:
-        load_logged_in_student()
-    course_off_term_selected = ''
-    course_off_list = getAllCourseOff(course)
-    instForCourseOffTerm = []
-    allInfo = ''
-    showInst = "No"
-    showAllInfo="No"
-    showOld = "Yes"
-    if request.method == 'POST':
-        if 'course offering go' in request.form:
-            if(request.form['course_off_selection'] == 'select'):
-                course_off_term_selected = ''
-            else:
-                course_off_term_selected = request.form['course_off_selection']
-                instForCourseOffTerm = getInstForCourseOffTerm(course_off_term_selected)
-                showInst="Yes"
-            print("course off : ", course_off_term_selected)
-            return render_template('admin_page_2_course.html',showOld="No", course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
-
-        if 'inst go' in request.form:
-            courseOffTerm = request.form['course_off_term']
-            inst_sec_number = request.form['inst_select']
-            allInfo = getAllInfo(courseOffTerm, inst_sec_number)
-            showInst="No"
-            showAllInfo="Yes"
-            showOld = "No"
-            print("debug : ", request.form['course_off_term'], request.form['inst_select'])
-            #return render_template('admin_page_2_course.html',showOld=showOld, course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
-
-    return render_template('admin_page_2_course.html',showOld=showOld, course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
-
-def getInstForCourseOffTerm(offTerm):
-    conn = db.start_db()
-    cur = conn.cursor()
-    q = """
-    WITH a as (select CONCAT(name,' - ',term_code) as course_off_name_term, sections.uuid as sec_uuid, number as sec_number from course_offerings join sections on course_offerings.uuid=sections.course_offering_uuid and CONCAT(name,' - ',term_code)=%s and room_uuid!='null')
-    , aa as (select course_off_name_term, sec_number, instructor_id from a join teachings on section_uuid=sec_uuid)
-    , relevant_instructors as (select course_off_name_term, CONCAT(instructors.name, ' - ', sec_number) as instructor_name_sec  from aa join instructors on instructors.id=instructor_id)
-    select * from relevant_instructors order by instructor_name_sec;
-    """
-    cur.execute(q, (offTerm,))
-    return cur.fetchall()
-
-def getAllInfo(courseOffTerm, inst_sec_number):
-    conn = db.start_db()
-    cur = conn.cursor()
-    q="""
-    WITH a as (select number as sec_number, course_offerings.uuid, CONCAT(name,' - ',term_code) as course_offering_name, sections.uuid as sec_uuid, section_type, room_uuid, schedule_uuid from course_offerings join sections on course_offerings.uuid=sections.course_offering_uuid and CONCAT(name,' - ',term_code)=%s and room_uuid!='null')
-    , aa as (select sec_number, uuid, course_offering_name, instructor_id, section_type, room_uuid, schedule_uuid from a join teachings on section_uuid=sec_uuid)
-    , aaa as (select sec_number, uuid, course_offering_name, CONCAT(instructors.name, ' - ', sec_number) as instructor_name, section_type, room_uuid, schedule_uuid from aa join instructors on instructors.id=instructor_id and CONCAT(instructors.name, ' - ', sec_number)=%s)
-    , aaaa as (select sec_number, aaa.uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, schedule_uuid from aaa join rooms on rooms.uuid=room_uuid)
-    , aaaaa as (select sec_number, aaaa.uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, start_time, end_time, mon, tues, wed, thurs, fri, sat, sun from aaaa join schedules on schedules.uuid=schedule_uuid)
-    , final_course_off_sections_instructors_schedule_grades_info as (select sec_number, uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, start_time, end_time, mon, tues, wed, thurs, fri, sat, sun, a_count, ab_count, b_count, bc_count, c_count, d_count, f_count, s_count, u_count, cr_count, n_count, p_count, i_count, nw_count, nr_count, other_count from aaaaa join grade_distributions on section_number=sec_number and course_offering_uuid=uuid)
-    select * from final_course_off_sections_instructors_schedule_grades_info;
-    """
-    cur.execute(q, (courseOffTerm, inst_sec_number,))
-    return cur.fetchone()
 
 @app.route('/adminpage/3', methods=['GET', 'POST'])
 def adminpage_3(privilegeLevel):
@@ -281,7 +212,6 @@ def adminpage_4(privilegeLevel):
     inst_list = []
     if insts_selected != '':
         inst_list = getAllInstructorswithCommonStart(insts_selected.lower())
-    print("here")
     return render_template('admin_page_4.html', instructors=inst_list)
 
 
@@ -298,95 +228,16 @@ def adminpage_4_instructor(instructor, privilegeLevel):
         if 'instructor go' in request.form:
             sub_newname = request.form['instructor_selection']
             sub_newcode = request.form['instructor_selection2']
-            previous_code = (getInstId(instructor))[0]
-            print("debug : ", sub_newname, sub_newcode, previous_code)
 
-            if (ifInstCodeAlreadyExists(sub_newcode)==0):
-                updateInstructor(sub_newname, sub_newcode, previous_code)
+            if (updateInstructor(sub_newname, sub_newcode,instructor)!=0):
                 return render_template('change_done.html')
             else:
-                return render_template('notification.html', msg = 'Update Failed : Instructor ID already taken !')
+                return render_template('notification.html', msg = 'Update Failed : Instructor ID already taken OR it is NOT NUMERIC !')
 
     return render_template('admin_page_4_instructor.html', instructor=instructor)
 
-def deleteInstructor(inst_name):
-    conn = db.start_db()
-    cur = conn.cursor()
-    q = """
-        DELETE FROM instructors WHERE name=%s;
-        """
-    cur.execute(q, (inst_name,))
-    conn.commit()
-    cur.close()
+    
 
-def getInstId(inst_name):
-    conn = db.start_db()
-    cur = conn.cursor()
-    q = """
-        SELECT id from instructors where name=%s;
-        """
-    cur.execute(q, (inst_name,))
-    return cur.fetchone()
-
-def ifInstCodeAlreadyExists(newCode):
-    conn = db.start_db()
-    cur = conn.cursor()
-    q = """
-        SELECT * FROM instructors WHERE instructors.id = %s;
-        """
-    cur.execute(q, (newCode,))
-    conn.commit()
-    return len(cur.fetchall())
-
-def updateInstructor(name, newCode, prevCode):
-    conn = db.start_db()
-    cur = conn.cursor()
-    q = """
-        UPDATE instructors SET id=%s, name=%s WHERE id=%s;
-        """
-    cur.execute(q, (newCode, name, prevCode,))
-    conn.commit()
-    cur.close()
-
-
-@app.route('/<privilegeLevel>/subjects/search', methods=['GET', 'POST'])
-def search_subject(privilegeLevel):
-    if privilegeLevel=='admin':
-        load_logged_in_admin()
-    else:
-        load_logged_in_student()
-    subs_selected = ''
-    sub_selected = ''
-    if request.method == 'POST':
-        if 'subject go' in request.form:
-            if(request.form['subject_selection'] == ''):
-                subs_selected = ''
-            else:
-                subs_selected = request.form['subject_selection']
-    sub_list = []
-    if subs_selected != '':
-        sub_list = getAllSubjectswithCommonStart(subs_selected.lower())
-    return render_template('search_subject.html', subjects=sub_list)
-
-@app.route('/<privilegeLevel>/instructors/search', methods=['GET', 'POST'])
-def search_instructor(privilegeLevel):
-    if privilegeLevel=='admin':
-        load_logged_in_admin()
-    else:
-        load_logged_in_student()
-    insts_selected = ''
-    inst_selected = ''
-    if request.method == 'POST':
-        if 'instructor go' in request.form:
-            if(request.form['instructor_selection'] == ''):
-                insts_selected = ''
-            else:
-                insts_selected = request.form['instructor_selection']
-    inst_list = []
-    if insts_selected != '':
-        inst_list = getAllInstructorswithCommonStart(insts_selected.lower())
-    print("here")
-    return render_template('search_instructor.html', instructors=inst_list)
 
 @app.route('/<privilegeLevel>/adminpage/5', methods=['GET', 'POST'])
 def adminpage_5(privilegeLevel):
@@ -423,9 +274,12 @@ def adminpage_5_subject(subject, privilegeLevel):
             sub_newname = request.form['subject_selection']
             sub_newcode = request.form['subject_selection2']
             sub_newabbr = request.form['subject_selection3']
-            return render_template('change_done.html')
 
-            
+            if (updateSubject(sub_newname, sub_newcode, sub_newabbr,subject)):
+                return render_template('change_done.html')
+            else:
+                return render_template('notification.html', msg = 'Update Failed : Subject ID or Subject Name or Subject Abbreviation already taken !')
+                     
     return render_template('admin_page_5_subject.html', subject=subject)
 
 
@@ -443,7 +297,12 @@ def adminpage_6(privilegeLevel):
             room_selected = request.form['room_selection']
             room_newfacility = request.form['room_selection2']
             room_newroom = request.form['room_selection3']
-            return render_template('change_done.html')
+
+            if (updateRoom(room_newroom, room_newfacility, room_selected)):
+                return render_template('change_done.html')
+            else:
+                return render_template('notification.html', msg = 'Update Failed : Room with the same already exists in the facility !')
+
     room_list = getAllRooms()
     print(room_selected, room_newfacility, room_newroom)
     return render_template('admin_page_6.html', room_list=room_list, room = room_selected)
@@ -528,6 +387,181 @@ def adminpage_10_course(course, privilegeLevel):
             
     return render_template('admin_page_10_course.html', course=course)
 
+
+
+
+
+
+@app.route('/<privilegeLevel>/subjects/search', methods=['GET', 'POST'])
+def search_subject(privilegeLevel):
+    if privilegeLevel=='admin':
+        load_logged_in_admin()
+    else:
+        load_logged_in_student()
+    subs_selected = ''
+    sub_selected = ''
+    if request.method == 'POST':
+        if 'subject go' in request.form:
+            if(request.form['subject_selection'] == ''):
+                subs_selected = ''
+            else:
+                subs_selected = request.form['subject_selection']
+    sub_list = []
+    if subs_selected != '':
+        sub_list = getAllSubjectswithCommonStart(subs_selected.lower())
+    return render_template('search_subject.html', subjects=sub_list)
+
+@app.route('/<privilegeLevel>/instructors/search', methods=['GET', 'POST'])
+def search_instructor(privilegeLevel):
+    if privilegeLevel=='admin':
+        load_logged_in_admin()
+    else:
+        load_logged_in_student()
+    insts_selected = ''
+    inst_selected = ''
+    if request.method == 'POST':
+        if 'instructor go' in request.form:
+            if(request.form['instructor_selection'] == ''):
+                insts_selected = ''
+            else:
+                insts_selected = request.form['instructor_selection']
+    inst_list = []
+    if insts_selected != '':
+        inst_list = getAllInstructorswithCommonStart(insts_selected.lower())
+    print("here")
+    return render_template('search_instructor.html', instructors=inst_list)
+
+
+def deleteInstructor(inst_name):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        DELETE FROM instructors WHERE name=%s;
+        """
+    cur.execute(q, (inst_name,))
+    conn.commit()
+    cur.close()
+
+
+def updateInstructor(name, newCode, instructor):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        UPDATE instructors SET id=%s, name=%s WHERE name||' - '||id=%s;
+        """
+    cur.execute(q, (newCode, name, instructor,))
+    conn.commit()
+    ra = cur.rowcount
+    cur.close()
+    return ra
+
+
+def updateSubject(newname, newcode, newabbr,subject):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        UPDATE subjects SET name=%s, code=%s , abbreviation=%s WHERE name=%s;
+        """
+    cur.execute(q, (newname, newcode, newabbr,subject,))
+    conn.commit()
+    ra = cur.rowcount
+    cur.close()
+    return ra
+
+def updateRoom(newroom, newfac, old):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        UPDATE rooms SET room_code=%s, facility_code=%s WHERE facility_code||' - '||room_code=%s;
+        """
+    cur.execute(q, (newroom, newfac, old,))
+    conn.commit()
+    ra = cur.rowcount
+    cur.close()
+    return ra
+    
+
+
+@app.route('/<privilegeLevel>/schedules', methods=['GET', 'POST'])
+def schedules_for_students(privilegeLevel):
+    if privilegeLevel=='admin':
+        load_logged_in_admin()
+    else:
+        load_logged_in_student()
+    courses_selected = ''
+    course_selected = ''
+    if request.method == 'POST':
+        if 'course go' in request.form:
+            if(request.form['course_selection'] == ''):
+                courses_selected = ''
+            else:
+                courses_selected = request.form['course_selection']
+        else:
+            course_selected = request.form['select a course']
+            print('course : ', course_selected)
+            return redirect(url_for('schedules_course', course=course_selected, privilegeLevel=privilegeLevel))
+    course_list = []
+    if courses_selected != '':
+        course_list = getAllCourseswithCommonStart(courses_selected)
+    return render_template('admin_page_2.html', courses=course_list)
+
+
+@app.route('/<privilegeLevel>/schedules/<course>', methods=['GET', 'POST'])
+def schedules_course(course, privilegeLevel):
+    if privilegeLevel=='admin':
+        load_logged_in_admin()
+    else:
+        load_logged_in_student()
+    course_off_term_selected = ''
+    course_off_list = getAllCourseOff(course)
+    instForCourseOffTerm = []
+    allInfo = ''
+    showInst = "No"
+    showAllInfo="No"
+    showOld = "Yes"
+    if request.method == 'POST':
+        if 'course offering go' in request.form:
+            if(request.form['course_off_selection'] == 'select'):
+                course_off_term_selected = ''
+            else:
+                course_off_term_selected = request.form['course_off_selection']
+                instForCourseOffTerm = getInstForCourseOffTerm(course_off_term_selected)
+                showInst="Yes"
+            print("course off : ", course_off_term_selected)
+            return render_template('admin_page_2_course.html',showOld="No", course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
+
+        if 'inst go' in request.form:
+            courseOffTerm = request.form['course_off_term']
+            inst_sec_number = request.form['inst_select']
+            allInfo = getAllInfo(courseOffTerm, inst_sec_number)
+            showInst="No"
+            showAllInfo="Yes"
+            showOld = "No"
+            print("debug : ", request.form['course_off_term'], request.form['inst_select'])
+            #return render_template('admin_page_2_course.html',showOld=showOld, course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
+
+    return render_template('admin_page_2_course.html',showOld=showOld, course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # HELPER FUNCTIONS
 #
 #
@@ -588,7 +622,7 @@ def getAllInstructorswithCommonStart(start):
     cur = conn.cursor()
     print("start : ", start)
     q = """
-    SELECT instructors.name, instructors.id FROM instructors WHERE LOWER(name) LIKE %s
+    SELECT instructors.name ||' - '|| instructors.id, instructors.id FROM instructors WHERE LOWER(name) LIKE %s
     """
     cur.execute(q, ('%'+start+'%',))
     return cur.fetchall()
@@ -626,6 +660,32 @@ def changeInstructorName(inst_selected, inst_newname):
     cur.execute("WITH relevant_code as (select code from subjects where abbreviation = %s), relevant_course_off_uuid as (select course_offering_uuid from relevant_code join subject_memberships on relevant_code.code=subject_memberships.subject_code), relevant_sec_id as (select uuid from relevant_course_off_uuid join sections on relevant_course_off_uuid.course_offering_uuid=sections.course_offering_uuid), relevant_inst_id as (select instructor_id, count(instructor_id) from relevant_sec_id join teachings on relevant_sec_id.uuid=teachings.section_uuid group by instructor_id), relevant_instructors as (select name, id from relevant_inst_id join instructors on relevant_inst_id.instructor_id=instructors.id order by name) select * from relevant_instructors", (sub,))
     return cur.fetchall()
 
+def getInstForCourseOffTerm(offTerm):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+    WITH a as (select CONCAT(name,' - ',term_code) as course_off_name_term, sections.uuid as sec_uuid, number as sec_number from course_offerings join sections on course_offerings.uuid=sections.course_offering_uuid and CONCAT(name,' - ',term_code)=%s and room_uuid!='null')
+    , aa as (select course_off_name_term, sec_number, instructor_id from a join teachings on section_uuid=sec_uuid)
+    , relevant_instructors as (select course_off_name_term, CONCAT(instructors.name, ' - ', sec_number) as instructor_name_sec  from aa join instructors on instructors.id=instructor_id)
+    select * from relevant_instructors order by instructor_name_sec;
+    """
+    cur.execute(q, (offTerm,))
+    return cur.fetchall()
+
+def getAllInfo(courseOffTerm, inst_sec_number):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q="""
+    WITH a as (select number as sec_number, course_offerings.uuid, CONCAT(name,' - ',term_code) as course_offering_name, sections.uuid as sec_uuid, section_type, room_uuid, schedule_uuid from course_offerings join sections on course_offerings.uuid=sections.course_offering_uuid and CONCAT(name,' - ',term_code)=%s and room_uuid!='null')
+    , aa as (select sec_number, uuid, course_offering_name, instructor_id, section_type, room_uuid, schedule_uuid from a join teachings on section_uuid=sec_uuid)
+    , aaa as (select sec_number, uuid, course_offering_name, CONCAT(instructors.name, ' - ', sec_number) as instructor_name, section_type, room_uuid, schedule_uuid from aa join instructors on instructors.id=instructor_id and CONCAT(instructors.name, ' - ', sec_number)=%s)
+    , aaaa as (select sec_number, aaa.uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, schedule_uuid from aaa join rooms on rooms.uuid=room_uuid)
+    , aaaaa as (select sec_number, aaaa.uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, start_time, end_time, mon, tues, wed, thurs, fri, sat, sun from aaaa join schedules on schedules.uuid=schedule_uuid)
+    , final_course_off_sections_instructors_schedule_grades_info as (select sec_number, uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, start_time, end_time, mon, tues, wed, thurs, fri, sat, sun, a_count, ab_count, b_count, bc_count, c_count, d_count, f_count, s_count, u_count, cr_count, n_count, p_count, i_count, nw_count, nr_count, other_count from aaaaa join grade_distributions on section_number=sec_number and course_offering_uuid=uuid)
+    select * from final_course_off_sections_instructors_schedule_grades_info;
+    """
+    cur.execute(q, (courseOffTerm, inst_sec_number,))
+    return cur.fetchone()
 
 @app.route('/adminlogin', methods=('GET', 'POST'))
 def adminlogin():

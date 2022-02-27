@@ -4,7 +4,7 @@ from psycopg2 import Error
 def start_db():
       # Connect to an existing database
       connection = psycopg2.connect(user="postgres",
-                                    password="22092001",
+                                    password="IZumbVFIcn",
                                     host="127.0.0.1",
                                     port="5432",
                                     database="postgres")
