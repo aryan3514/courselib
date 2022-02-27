@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<br>
+<br>
+<h1 class="box4">{% block title %}Notification!{% endblock %}</h1>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
+
+{% endblock %}
+
+
+{% block content %}
+<h3>
+    <form action="" method="POST">
+      <td>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <label class="arr" for="username">{{msg}}</label>
+        <br>
+        <br>
+        <a class="returntohomepage" href="{{ url_for('adminhomepage') }}">Return to Homepage</a>
+      </td>
+    </form>
+</h3>
+{% endblock %}

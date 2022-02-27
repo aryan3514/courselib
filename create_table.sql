@@ -196,6 +196,8 @@ CREATE TABLE IF NOT EXISTS teachings(
 	-- 	CONSTRAINT section_uuid_foreign_key FOREIGN KEY (section_uuid) references sections(uuid) ON UPDATE CASCADE ON DELETE CASCADE
 	);
 
+
+
 -- ALTER table teachings drop constraint teachings_key;
 -- ALTER table teachings add CONSTRAINT teachings_primary_key PRIMARY KEY (instructor_id,section_uuid);
 
