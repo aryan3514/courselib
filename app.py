@@ -24,8 +24,10 @@ def studenthomepage():
             return redirect(url_for('admin_instructors', privilegeLevel = 'student'))
         if 'part 3' in request.form:
             return redirect(url_for('admin_subjects', privilegeLevel = 'student'))
-        if 'part 5' in request.form:
+        if 'part 4' in request.form:
             return redirect(url_for('schedules_for_students', privilegeLevel = 'student'))
+        if 'part 5' in request.form:
+            return redirect(url_for('watchlist_render', privilegeLevel = 'student'))
     return render_template('student_page.html')
 
 
@@ -540,17 +542,50 @@ def schedules_course(course, privilegeLevel):
             print("debug : ", request.form['course_off_term'], request.form['inst_select'])
             #return render_template('admin_page_2_course.html',showOld=showOld, course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
 
+        if 'watchlist go' in request.form:
+            insertRowInWatchlist(g.user[0], request.form['select off and term'], request.form['select sec type'], request.form['select inst name and sec num'])
     return render_template('admin_page_2_course.html',showOld=showOld, course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
 
+def insertRowInWatchlist(stud_id, offTerm, sec, instSec):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        INSERT INTO student_watchlist VALUES (%s, %s, %s, %s);
+        """
+    cur.execute(q, (stud_id, offTerm, sec, instSec,))
+    conn.commit()
+    cur.close()
+
+@app.route('/<privilegeLevel>/watchlist', methods=['GET', 'POST'])
+def watchlist_render(privilegeLevel):
+    load_logged_in_student()
+    stud_id = g.user[0]
+    if request.method == 'POST':
+        if 'drop go' in request.form:
+            deleteRow(stud_id, request.form['off term'], request.form['sec type'],  request.form['inst sec'])
+    watch_list=getWatchlist(stud_id)
+    return render_template('watchlist.html', watch_list=watch_list)
 
 
+def getWatchlist(id):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+    SELECT * from student_watchlist where student_id=%s;
+    """
+    cur.execute(q, (id,))
+    return cur.fetchall()
 
 
-
-
-
-
-
+def deleteRow(stud_id, offTerm, sec, instSec):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        DELETE FROM student_watchlist WHERE student_id=%s and course_offering_name_term_code=%s and section_type=%s and instructor_name_sec_number=%s;
+        """
+    cur.execute(q, (stud_id,offTerm,sec,instSec,))
+    conn.commit()
+    cur.close()
 
 
 
@@ -696,7 +731,7 @@ def adminlogin():
         cur = conn.cursor()
         error = None
         cur.execute(
-            "SELECT password FROM admin_info where username = %s", (username,))
+            "SELECT password FROM login_for_admin where id = %s", (username,))
         user = cur.fetchone()
         print(user)
         if user is None:
@@ -721,7 +756,7 @@ def studentlogin():
         cur = conn.cursor()
         error = None
         cur.execute(
-            "SELECT password FROM student_login_info where username = %s", (username,))
+            "SELECT password FROM login_for_student where id = %s", (username,))
         user = cur.fetchone()
         print(user)
         if user is None:
@@ -745,7 +780,7 @@ def load_logged_in_admin():
         conn = db.start_db()
         cur = conn.cursor()
         cur.execute(
-            'SELECT username FROM admin_info WHERE username = %s', (username,))
+            'SELECT id FROM login_for_admin WHERE id = %s', (username,))
         g.user = cur.fetchone()
         g.privilegeLevel = 'admin'
 
@@ -758,7 +793,7 @@ def load_logged_in_student():
         conn = db.start_db()
         cur = conn.cursor()
         cur.execute(
-            'SELECT username FROM student_login_info WHERE username = %s', (username,))
+            'SELECT id FROM login_for_student WHERE id = %s', (username,))
         g.user = cur.fetchone()
         g.privilegeLevel = 'student'
 

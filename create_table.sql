@@ -210,7 +210,26 @@ CREATE TABLE IF NOT EXISTS teachings(
 
 
 
+CREATE TABLE IF NOT EXISTS login_for_student(
+	id text not null,
+	password text not null,
+	CONSTRAINT login_for_student_primary_key PRIMARY KEY (id)
+);
 
+CREATE TABLE IF NOT EXISTS student_watchlist(
+	student_id text not null,
+	course_offering_name_term_code text not null,
+	section_type text,
+	instructor_name_sec_number text,
+	CONSTRAINT student_watchlist_primary_key PRIMARY KEY (student_id,course_offering_name_term_code),
+	CONSTRAINT sstudent_id_foreign_key FOREIGN KEY (student_id) references login_for_student(id)
+);
+
+CREATE TABLE IF NOT EXISTS login_for_admin(
+	id text not null,
+	password text not null,
+	CONSTRAINT login_for_admin_primary_key PRIMARY KEY (id)
+);
 
 
 

@@ -60,19 +60,35 @@
 			{% endif %}
 			
 			{% if showAllInfo=="Yes" %}
-				<br>
-				<div class = "resb">Course Offering - Term Code</div> 
-				<div class = "info"> {{allInfo[2]}}</div>
-				<br>
-				<br>
-				<br>
-				<div class = "resb">Instructor Name - Section Number </div>
-				<div class ="info"> {{allInfo[3]}}</div>
-				<br>
-				<br>
-				<br>
-				<div class = "resb">Section Type</div>
-				<div class ="info">{{allInfo[4]}}</div>
+				<form action="" method="POST">
+					{% if g.privilegeLevel=="student" %}
+					<div align="center">
+						<button type="submit" name="watchlist go" style="background-color:lightgreen;height: 40px" >
+							Add to watchlist
+						</button>
+					</div>
+					{% endif %}
+					<br>
+					<br>
+					<div class = "resb">Course Offering - Term Code</div> 
+					<select name="select off and term" class = "info">
+					 	<option>{{allInfo[2]}}</option>
+					</select>
+					<br>
+					<br>
+					<br>
+					<div class = "resb">Instructor Name - Section Number </div>
+					<select name="select inst name and sec num" class = "info">
+					 	<option>{{allInfo[3]}}</option>
+					</select>
+					<br>
+					<br>
+					<br>
+					<div class = "resb">Section Type</div>
+					<select name="select sec type" class = "info">
+					 	<option>{{allInfo[4]}}</option>
+					</select>
+				</form>
 				<br>
 				<br>
 				<br>
