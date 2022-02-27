@@ -2,11 +2,12 @@ import re
 from flask import (Flask, g, flash, redirect,
                    render_template, request, session, url_for)
 import db
-
+import random
 
 app = Flask(__name__)
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
+
 
 
 @app.route('/')
@@ -271,6 +272,7 @@ def adminpage_5_subject(subject, privilegeLevel):
     if request.method == 'POST':
         if 'subject kill' in request.form:
             print("kill", subject)
+            deleteSubject(subject)
             return render_template('delete_dump.html', whodel=subject)
         if 'subject go' in request.form:
             sub_newname = request.form['subject_selection']
@@ -294,6 +296,7 @@ def adminpage_6(privilegeLevel):
     room_newroom = ' '
     if request.method == 'POST':
         if 'room kill' in request.form:
+            deleteRoom(room_selected)
             return render_template('delete_dump.html', whodel = "the given room")
         if 'room go' in request.form:
             room_selected = request.form['room_selection']
@@ -303,7 +306,7 @@ def adminpage_6(privilegeLevel):
             if (updateRoom(room_newroom, room_newfacility, room_selected)):
                 return render_template('change_done.html')
             else:
-                return render_template('notification.html', msg = 'Update Failed : Room with the same already exists in the facility !')
+                return render_template('notification.html', msg = 'Update Failed : Room with the same code already exists in the facility !')
 
     room_list = getAllRooms()
     print(room_selected, room_newfacility, room_newroom)
@@ -322,7 +325,11 @@ def adminpage_7(privilegeLevel):
             inst_newname = request.form['instructor_selection']
 
             inst_newcode = request.form['instructor_selection2']
-    print(inst_newname, inst_newcode)
+
+            if(addInstructor(inst_newname, inst_newcode)!=0):
+                return render_template('change_done.html')
+            else:
+                return render_template('notification.html', msg = 'Addition Failed : Instructor ID already taken OR it is NOT numeric  !')
     return render_template('admin_page_7.html')
 
 
@@ -331,30 +338,44 @@ def adminpage_8(privilegeLevel):
     load_logged_in_admin()
     sub_newname = ''
     sub_newcode = ''
+    sub_newabbr = ''
     if request.method == 'POST':
         if 'subject go' in request.form:
 
-            sub_newname = request.form['subject_selection']
+            sub_newcode = request.form['subject_selection']
 
-            sub_newcode = request.form['subject_selection2']
-    print(sub_newname, sub_newcode)
+            sub_newname = request.form['subject_selection2']
+
+            sub_newabbr = request.form['subject_selection3']
+
+
+            if addSubject(sub_newname, sub_newcode, sub_newabbr):
+                return render_template('change_done.html')
+            else:
+                return render_template('notification.html', msg = 'Addition Failed : Subject ID or Subject Name or Subject Abbreviation already taken !')
+
+
+    #print(sub_newname, sub_newcode)
     return render_template('admin_page_8.html')
 
 
 @app.route('/<privilegeLevel>/adminpage/9', methods=['GET', 'POST'])
 def adminpage_9(privilegeLevel):
     load_logged_in_admin()
-    room_newname = ''
-    room_newcode = ''
+    room_fac = ''
+    room_rcode = ''
     if request.method == 'POST':
         if 'room go' in request.form:
 
-            room_newname = request.form['room_selection']
+            room_fac = request.form['room_selection']
 
-            room_newcode = request.form['room_selection2']
+            room_rcode = request.form['room_selection2']
+            addRoom(room_fac,room_rcode)
+            return render_template('change_done.html')
+
 
     #NEED TO CREATE A NEW KEY
-    print(room_newname, room_newcode)
+    #print(room_newname, room_newcode)
     return render_template('admin_page_9.html')
 
 
@@ -386,7 +407,9 @@ def adminpage_10_course(course, privilegeLevel):
     if request.method == 'POST':
         if 'course go' in request.form:
             course_newname = request.form['course_selection']
-            
+            updateCourse(course,course_newname)
+            return render_template('change_done.html')
+
     return render_template('admin_page_10_course.html', course=course)
 
 
@@ -434,15 +457,17 @@ def search_instructor(privilegeLevel):
     return render_template('search_instructor.html', instructors=inst_list)
 
 
-def deleteInstructor(inst_name):
+def deleteInstructor(instructor):
     conn = db.start_db()
     cur = conn.cursor()
     q = """
-        DELETE FROM instructors WHERE name=%s;
+        DELETE FROM instructors WHERE name||' - '||id=%s;
         """
-    cur.execute(q, (inst_name,))
+    cur.execute(q, (instructor,))
     conn.commit()
+    ra = cur.rowcount
     cur.close()
+    return ra
 
 
 def updateInstructor(name, newCode, instructor):
@@ -457,6 +482,20 @@ def updateInstructor(name, newCode, instructor):
     cur.close()
     return ra
 
+def addInstructor(name, code):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        INSERT INTO instructors(id,name) VALUES (%s,%s);
+        """
+    cur.execute(q, (name,code,))
+    conn.commit()
+    ra = cur.rowcount
+    cur.close()
+    print(ra)
+    return ra
+
+#SUBJECT
 
 def updateSubject(newname, newcode, newabbr,subject):
     conn = db.start_db()
@@ -470,6 +509,34 @@ def updateSubject(newname, newcode, newabbr,subject):
     cur.close()
     return ra
 
+def addSubject(name, code, abbr):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        INSERT INTO subjects(code,name, abbreviation) VALUES (%s,%s,%s);
+        """
+    cur.execute(q, (name,code,abbr,))
+    conn.commit()
+    ra = cur.rowcount
+    cur.close()
+    print(ra)
+    return ra
+
+def deleteSubject(subject):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        DELETE FROM subjects WHERE name=%s;
+        """
+    cur.execute(q, (subject,))
+    conn.commit()
+    ra = cur.rowcount
+    cur.close()
+    return ra
+
+
+# ROOM
+
 def updateRoom(newroom, newfac, old):
     conn = db.start_db()
     cur = conn.cursor()
@@ -482,7 +549,59 @@ def updateRoom(newroom, newfac, old):
     cur.close()
     return ra
     
+def addRoom(fac, room):
+    conn = db.start_db()
+    cur = conn.cursor()
+    key = randomKeyGenerator()
+    q = """
+        INSERT INTO rooms(uuid,facility_code, room_code) VALUES (%s,%s,%s);
+        """
+    cur.execute(q, (key,fac,room,))
+    conn.commit()
+    ra = cur.rowcount
+    cur.close()
+    print(ra)
+    return ra
 
+def deleteRoom(room):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        DELETE FROM rooms WHERE facility_code||' - '||room_code=%s;
+        """
+    cur.execute(q, (room,))
+    conn.commit()
+    ra = cur.rowcount
+    cur.close()
+    return ra
+
+
+#COURSEEEEEE  
+def updateCourse(old,new):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        UPDATE courses SET name=%s WHERE name=%s;
+        """
+    cur.execute(q, (new,old,))
+    conn.commit()
+    ra = cur.rowcount
+    cur.close()
+    return ra
+
+
+
+def deleteRoom(name):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        DELETE FROM courses WHERE name=%s;
+        """
+    cur.execute(q, (name,))
+    conn.commit()
+    ra = cur.rowcount
+    cur.close()
+    return ra
 
 @app.route('/<privilegeLevel>/schedules', methods=['GET', 'POST'])
 def schedules_for_students(privilegeLevel):
@@ -610,6 +729,11 @@ def deleteRow(stud_id, offTerm, sec, instSec):
 #
 #
 #
+def randomKeyGenerator():
+    a = []
+    for i in range(32):
+        a.append(str(random.randint(0,9)))
+    return "".join(a[:8]) + "-" + "".join(a[8:12]) + "-" + "".join(a[12:20]) + "-" + "".join(a[20:])
 
 
 def getAllRooms():

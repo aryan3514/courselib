@@ -70,7 +70,7 @@ CREATE OR REPLACE FUNCTION check_if_room_taken()
   AS
 $$
 BEGIN
-	IF (NEW.facility_code,NEW.room_code) IN (select (rooms.facility_code, rooms.room_code) from rooms) THEN
+	IF (NEW.facility_code,NEW.room_code) IN (select rooms.facility_code, rooms.room_code from rooms) THEN
     RETURN NULL;
   END IF;
 	RETURN NEW;
@@ -101,7 +101,7 @@ CREATE or replace TRIGGER inst_insert_trigger
 --TRIGGER 3--
 
 CREATE or replace TRIGGER inst_insert_numeric_trigger
-    BEFORE INSERT ON instructors
+    AFTER INSERT ON instructors
     FOR EACH ROW
     EXECUTE PROCEDURE check_if_inst_code_is_numeric();
 
