@@ -364,6 +364,7 @@ def available_rooms(privilegeLevel):
     endtime = ''
     dlist = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     toSearch = 'Yes'
+    m = []
     if request.method == 'POST':
         if 'ravl go' in request.form:
 
@@ -379,13 +380,13 @@ def available_rooms(privilegeLevel):
             else:
                 return render_template('notification.html', msg = 'Time is not in the appropriate format !')
     #print(sub_newname, sub_newcode)
-    return render_template('available_rooms.html', day_list = dlist, starttime = starttime, endtime= endtime, allav=m, day = day)
+    return render_template('available_rooms.html', day_list = dlist, starttime = starttime, endtime= endtime, allav=m, day = day, toSearch=toSearch)
 
 def checkTimeSanity(s):
     if(not s.isnumeric()):
         print("hello")
     print(len(s), int(s))
-    return not(len(s)!=4 or int(s) > 2400)
+    return not(len(s)!=4 or int(s) > 2400 or int(s[2:]) > 60)
 
 def availableRoomList(day,startime, endtime):
     conn = db.start_db()
