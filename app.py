@@ -117,11 +117,6 @@ def admin_rooms(privilegeLevel):
                 return redirect(url_for('adminpage_6', privilegeLevel = 'admin'))
             if 'add' in request.form:
                 return redirect(url_for('adminpage_9', privilegeLevel = 'admin'))
-    else:
-        load_logged_in_student()
-        if request.method == 'POST':
-            if 'search' in request.form:
-                return redirect(url_for('adminpage_1', privilegeLevel = 'student'))
     return render_template('admin_rooms.html', privilegeLevel=privilegeLevel)
 
 
@@ -139,44 +134,6 @@ def admin_rooms(privilegeLevel):
 #
 #
 #
-
-@app.route('/<privilegeLevel>/adminpage/1', methods=['GET', 'POST'])
-def adminpage_1(privilegeLevel):
-    if(privilegeLevel=='admin'):
-        load_logged_in_admin()
-    else:
-        load_logged_in_student()
-    whatToDo = ''
-    subject_selected = ''
-    inst_selected = ''
-
-    if request.method == 'POST':
-
-        if 'subject go' in request.form:
-
-            if(request.form['subject_selection'] == '' and request.form['subject_selection2'] == 'select'):
-                whatToDo = 'nothing'
-            elif(request.form['subject_selection'] == ''):
-                subject_selected = request.form['subject_selection2']
-                whatToDo = 'get instructors'
-            else:
-                subject_selected = request.form['subject_selection']
-                whatToDo = 'get instructors'
-            print("subject : ", subject_selected)
-
-        if 'instructor go' in request.form:
-            if(request.form['instructor_selection'] == '' and request.form['instructor_selection2'] == 'select'):
-                whatToDo = 'nothing'
-            elif(request.form['instructor_selection'] == ''):
-                inst_selected = request.form['instructor_selection2']
-                whatToDo = 'get instructors'
-            else:
-                inst_selected = request.form['instructor_selection']
-                whatToDo = 'get instructors'
-            print("instructor : ", inst_selected)
-    inst_list = searchInstsForSub(subject_selected)
-    abb_list = getAllSubAbbreviation()
-    return render_template('admin_page_1.html', subject_abb_list=abb_list, instructor_list=inst_list, sub=subject_selected, inst=inst_selected)
 
 
 
@@ -937,20 +894,6 @@ def getAllSubjectswithCommonStart(start):
     return cur.fetchall()
 
 
-def searchInstsForSub(sub):
-    conn = db.start_db()
-    cur = conn.cursor()
-    q = """
-    WITH relevant_code as (select code from subjects where abbreviation = %s),
-    relevant_course_off_uuid as (select course_offering_uuid from relevant_code join subject_memberships on relevant_code.code=subject_memberships.subject_code), 
-    relevant_sec_id as (select uuid from relevant_course_off_uuid join sections on relevant_course_off_uuid.course_offering_uuid=sections.course_offering_uuid), 
-    relevant_inst_id as (select instructor_id, count(instructor_id) from relevant_sec_id join teachings on relevant_sec_id.uuid=teachings.section_uuid group by instructor_id), 
-    relevant_instructors as (select name, id from relevant_inst_id join instructors on relevant_inst_id.instructor_id=instructors.id order by name) 
-    select * from relevant_instructors
-    """
-    cur.execute(q, (sub,))
-    return cur.fetchall()
-
 
 def changeInstructorName(inst_selected, inst_newname):
     conn = db.start_db()
@@ -961,11 +904,8 @@ def changeInstructorName(inst_selected, inst_newname):
 def getInstForCourseOffTerm(offTerm):
     conn = db.start_db()
     cur = conn.cursor()
-    q = """
-    WITH a as (select CONCAT(name,' - ',term_code) as course_off_name_term, sections.uuid as sec_uuid, number as sec_number from course_offerings join sections on course_offerings.uuid=sections.course_offering_uuid and CONCAT(name,' - ',term_code)=%s and room_uuid!='null')
-    , aa as (select course_off_name_term, sec_number, instructor_id from a join teachings on section_uuid=sec_uuid)
-    , relevant_instructors as (select course_off_name_term, CONCAT(instructors.name, ' - ', sec_number) as instructor_name_sec  from aa join instructors on instructors.id=instructor_id)
-    select * from relevant_instructors order by instructor_name_sec;
+    q="""
+    SELECT * from inst_vs_off_term_view where course_off_name_term=%s;
     """
     cur.execute(q, (offTerm,))
     return cur.fetchall()
@@ -974,13 +914,7 @@ def getAllInfo(courseOffTerm, inst_sec_number):
     conn = db.start_db()
     cur = conn.cursor()
     q="""
-    WITH a as (select number as sec_number, course_offerings.uuid, CONCAT(name,' - ',term_code) as course_offering_name, sections.uuid as sec_uuid, section_type, room_uuid, schedule_uuid from course_offerings join sections on course_offerings.uuid=sections.course_offering_uuid and CONCAT(name,' - ',term_code)=%s and room_uuid!='null')
-    , aa as (select sec_number, uuid, course_offering_name, instructor_id, section_type, room_uuid, schedule_uuid from a join teachings on section_uuid=sec_uuid)
-    , aaa as (select sec_number, uuid, course_offering_name, CONCAT(instructors.name, ' - ', sec_number) as instructor_name, section_type, room_uuid, schedule_uuid from aa join instructors on instructors.id=instructor_id and CONCAT(instructors.name, ' - ', sec_number)=%s)
-    , aaaa as (select sec_number, aaa.uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, schedule_uuid from aaa join rooms on rooms.uuid=room_uuid)
-    , aaaaa as (select sec_number, aaaa.uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, start_time, end_time, mon, tues, wed, thurs, fri, sat, sun from aaaa join schedules on schedules.uuid=schedule_uuid)
-    , final_course_off_sections_instructors_schedule_grades_info as (select sec_number, uuid, course_offering_name, instructor_name, section_type, facility_code, room_code, start_time, end_time, mon, tues, wed, thurs, fri, sat, sun, a_count, ab_count, b_count, bc_count, c_count, d_count, f_count, s_count, u_count, cr_count, n_count, p_count, i_count, nw_count, nr_count, other_count from aaaaa join grade_distributions on section_number=sec_number and course_offering_uuid=uuid)
-    select * from final_course_off_sections_instructors_schedule_grades_info;
+    SELECT * from all_info_view where course_offering_name=%s and instructor_name=%s; 
     """
     cur.execute(q, (courseOffTerm, inst_sec_number,))
     return cur.fetchone()
