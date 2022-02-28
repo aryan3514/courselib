@@ -22,22 +22,24 @@
       {% endif %}
       <br>
       <br>
-        <a class="box2" href="{{ url_for('logout') }}">Log Out</a>
-    
+      <a class="box2" href="{{ url_for('logout') }}">Log Out</a>
     {% else %}
       <nav>
         <p class="box1" href="{{ url_for('adminhomepage') }}">CourseLib</p>
+        <br><br>
+        <br><br>
         <br><br>
         
       <a class="ar" href="{{ url_for('adminlogin') }}">Admin Log In</a>
       <p>                                  </p>
       <a class="ar" href="{{ url_for('studentlogin') }}">Student Log In</a>
       </nav>
+     
     {% endif %}
 
 </nav>
 
-
+<br><br>
 <section class="content">
   <header>
     {% block header %}{% endblock %}

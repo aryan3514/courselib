@@ -64,7 +64,7 @@ def admin_courses(privilegeLevel):
             if 'update' in request.form:
                 return redirect(url_for('adminpage_10', privilegeLevel = 'admin'))
             if 'add' in request.form:
-                return redirect(url_for('adminpage_10', privilegeLevel = 'admin'))
+                return redirect(url_for('add_course', privilegeLevel = 'admin'))
     else:
         load_logged_in_student()
         if request.method == 'POST':
@@ -354,6 +354,7 @@ def adminpage_8(privilegeLevel):
                 return render_template('change_done.html')
             else:
                 return render_template('notification.html', msg = 'Addition Failed : Subject ID or Subject Name or Subject Abbreviation already taken !')
+    return render_template('admin_page_8.html')
 
 
 @app.route('/<privilegeLevel>/available_rooms', methods=['GET', 'POST'])
@@ -429,6 +430,21 @@ def adminpage_9(privilegeLevel):
     #print(room_newname, room_newcode)
     return render_template('admin_page_9.html')
 
+@app.route('/<privilegeLevel>/add_course', methods=['GET', 'POST'])
+def add_course(privilegeLevel):
+    load_logged_in_admin()
+    coname = ''
+    if request.method == 'POST':
+        if 'course go' in request.form:
+
+            coname = request.form['course_selection']
+
+            if (addCourse(coname)):
+                return render_template('change_done.html')
+            else:
+                return render_template('notification.html', msg = 'Addition Failed !')
+    return render_template('add_course.html')
+
 
 @app.route('/<privilegeLevel>/adminpage/10', methods=['GET', 'POST'])
 def adminpage_10(privilegeLevel):
@@ -480,16 +496,24 @@ def search_subject(privilegeLevel):
         load_logged_in_student()
     subs_selected = ''
     sub_selected = ''
+    toSearch = "Yes"
+    finin = ''
+    allcor = []
     if request.method == 'POST':
         if 'subject go' in request.form:
             if(request.form['subject_selection'] == ''):
                 subs_selected = ''
             else:
                 subs_selected = request.form['subject_selection']
+        else:
+            finin = request.form['select a subject']
+            toSearch = "No"
+            allcor = getAllCoursesForSubject(finin)
     sub_list = []
     if subs_selected != '':
         sub_list = getAllSubjectswithCommonStart(subs_selected.lower())
-    return render_template('search_subject.html', subjects=sub_list)
+    return render_template('search_subject.html', subjects=sub_list, toSearch = toSearch, subject = finin, allcor = allcor)
+
 
 @app.route('/<privilegeLevel>/instructors/search', methods=['GET', 'POST'])
 def search_instructor(privilegeLevel):
@@ -499,17 +523,24 @@ def search_instructor(privilegeLevel):
         load_logged_in_student()
     insts_selected = ''
     inst_selected = ''
+    toSearch = "Yes"
+    finin = ''
+    allcor = []
     if request.method == 'POST':
         if 'instructor go' in request.form:
             if(request.form['instructor_selection'] == ''):
                 insts_selected = ''
             else:
                 insts_selected = request.form['instructor_selection']
+        else:
+            finin = request.form['select a instructor']
+            toSearch = "No"
+            allcor = getAllCoursesForInstructor(finin)
     inst_list = []
     if insts_selected != '':
         inst_list = getAllInstructorswithCommonStart(insts_selected.lower())
     print("here")
-    return render_template('search_instructor.html', instructors=inst_list)
+    return render_template('search_instructor.html', instructors=inst_list, toSearch = toSearch, instructor = finin, allcor = allcor)
 
 @app.route('/<privilegeLevel>/courses/search', methods=['GET', 'POST'])
 def search_course(privilegeLevel):
@@ -524,11 +555,31 @@ def search_course(privilegeLevel):
                 cs_selected = ''
             else:
                 cs_selected = request.form['course_selection']
+        
+        
     c_list = []
     if cs_selected != '':
         c_list = getAllCourseswithCommonStart(cs_selected.lower())
     return render_template('search_course.html', courses=c_list)
 
+
+def getAllCoursesForInstructor(finin):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        SELECT insts_vs_courses.course_name FROM insts_vs_courses WHERE inst_name||' - '||id=%s;
+        """
+    cur.execute(q, (finin,))
+    return cur.fetchall()
+
+def getAllCoursesForSubject(finin):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        SELECT subs_vs_courses.name FROM subs_vs_courses WHERE subs_vs_courses.subname=%s;
+        """
+    cur.execute(q, (finin,))
+    return cur.fetchall()
 
 def deleteInstructor(instructor):
     conn = db.start_db()
@@ -671,6 +722,19 @@ def deleteCourse(name):
         DELETE FROM courses WHERE name=%s;
         """
     cur.execute(q, (name,))
+    conn.commit()
+    ra = cur.rowcount
+    cur.close()
+    return ra
+
+def addCourse(name):
+    conn = db.start_db()
+    cur = conn.cursor()
+    key = randomKeyGenerator()
+    q = """
+        INSERT INTO courses(uuid,name,number) VALUES (%s,%s,%s);
+        """
+    cur.execute(q, (key,name,1,))
     conn.commit()
     ra = cur.rowcount
     cur.close()

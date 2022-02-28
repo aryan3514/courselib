@@ -9,6 +9,7 @@
 
 
 {% block content %}
+{%if toSearch == "Yes"%}
 <div>
 	<form action="" method="POST">
 		<br>
@@ -42,4 +43,15 @@
 		</form>
 	{% endfor %}
 </div>
+{%else%}
+<br>
+<br>
+<br>
+<h1 class="arr">All Courses Under the Subject {{subject}}</h1>
+<br>
+<br>
+	{% for x in allcor%}
+			<h1 class="entries" type="submit" name="select a instructor" value="{{x[0]}}">{{x[0]}}</h1><br>
+	{% endfor %}
+{%endif%}
 {% endblock %}

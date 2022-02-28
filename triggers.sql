@@ -77,7 +77,18 @@ BEGIN
 END;
 $$; 
 
-
+CREATE OR REPLACE FUNCTION check_if_student_already_watchlisted()
+  RETURNS TRIGGER 
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+	IF (NEW.student_id, NEW.course_offering_name_term_code, NEW.section_type, NEW.instructor_name_sec_number) IN (select * from student_watchlist) THEN
+    RETURN NULL;
+  END IF;
+	RETURN NEW;
+END;
+$$;
 --TRIGGER 1--
 
 --BEFORE UPDATE
@@ -153,4 +164,8 @@ CREATE or replace TRIGGER room_update_trigger
     FOR EACH ROW
     EXECUTE PROCEDURE check_if_room_taken(); 
 
+CREATE OR REPLACE TRIGGER watchlist_trigger
+    BEFORE INSERT ON student_watchlist
+    FOR EACH ROW 
+    EXECUTE PROCEDURE check_if_student_already_watchlisted();
 
