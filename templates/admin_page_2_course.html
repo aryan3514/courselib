@@ -67,29 +67,29 @@
 				<form action="" method="POST">
 					{% if g.privilegeLevel=="student" %}
 					<div align="center">
-						<button type="submit" name="watchlist go" style="background-color:lightgreen;height: 40px" >
-							Add to watchlist
+						<button class ="add_to_watchlist" type="submit" name="watchlist go" >
+							Add to Watchlist
 						</button>
 					</div>
 					{% endif %}
 					<br>
 					<br>
 					<div class = "resb">Course Offering - Term Code</div> 
-					<select name="select off and term" class = "info">
+					<select name="select off and term" class = "info-sub">
 					 	<option>{{allInfo[2]}}</option>
 					</select>
 					<br>
 					<br>
 					<br>
 					<div class = "resb">Instructor Name - Section Number </div>
-					<select name="select inst name and sec num" class = "info">
+					<select name="select inst name and sec num" class = "info-sub">
 					 	<option>{{allInfo[3]}}</option>
 					</select>
 					<br>
 					<br>
 					<br>
 					<div class = "resb">Section Type</div>
-					<select name="select sec type" class = "info">
+					<select name="select sec type" class = "info-sub">
 					 	<option>{{allInfo[4]}}</option>
 					</select>
 				</form>

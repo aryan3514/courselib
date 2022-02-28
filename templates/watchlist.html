@@ -16,9 +16,10 @@
     <table align="center" style="width:100%">
       <tr>
         <th align="center" style="height:100%;width:50%">Offering - Term</th>
-        <th align="center" style="height:100%;width:10%">Section Type</th>
-        <th align="center" style="height:100%;width:20%">Instructor - Section No.</th>
+        <th  align="center" style="height:100%;width:10%">Section Type</th>
+        <th  align="center" style="height:100%;width:20%">Instructor - Section No.</th>
       </tr>
+      <tr><td></td><td></td><td></td></tr>
       {% for x in watch_list %}
         <form action="" method="POST">
           <tr>
@@ -38,11 +39,14 @@
                 </select>
             </td>
             <td>
-                <button class="resb" style="text-align: center" type="submit" name="drop go">
+                <button class="rowdrop" style="text-align: center" type="submit" name="drop go">
                     DROP
                 </button>
             </td>
           </tr>
+
+          <tr><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td></tr>
         </form>
       {% endfor %}
     </table>

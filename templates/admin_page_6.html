@@ -18,20 +18,25 @@
 	        Search for Room 
 	    </label>
 		<br><br>
-	    <select name="room_selection">
-			<option>select</option>
+	    <select class="dropdown" name="room_selection">
+			<option>Select</option>
 				{% for x in room_list %}
 					<option>
 						{{ x[0] }}
 					</option>
 				{% endfor %}
 			</select>
+			<br>
+			<br>
 
-			<input type="text" name="room_selection2" 
+			<input class ="inpbuts" type="text" name="room_selection2" 
 			value="{{ request.form['room_selection2'] }}" 
 			placeholder="New Facility Code">
 		  </input>
-		  <input type="text" name="room_selection3" 
+			<br>
+			<br>
+
+		  <input class = "inpbuts" type="text" name="room_selection3" 
 			value="{{ request.form['room_selection3'] }}" 
 			placeholder="New Room Code">
 		  </input>

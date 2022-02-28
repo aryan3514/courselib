@@ -21,7 +21,11 @@
         <label class="arr" for="username">{{msg}}</label>
         <br>
         <br>
+        {%if g.privilegeLevel=="admin"%}
         <a class="returntohomepage" href="{{ url_for('adminhomepage') }}">Return to Homepage</a>
+        {%else %}
+        <a class="returntohomepage" href="{{ url_for('studenthomepage') }}">Return to Homepage</a>
+        {%endif%}
       </td>
     </form>
 </h3>

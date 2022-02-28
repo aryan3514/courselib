@@ -69,7 +69,7 @@ def admin_courses(privilegeLevel):
         load_logged_in_student()
         if request.method == 'POST':
             if 'search' in request.form:
-                return redirect(url_for('adminpage_1', privilegeLevel = 'student'))
+                return redirect(url_for('search_course', privilegeLevel = 'student'))
     return render_template('admin_courses.html', privilegeLevel=privilegeLevel)
 
 @app.route('/<privilegeLevel>/instructors', methods=['GET', 'POST'])
@@ -297,6 +297,7 @@ def adminpage_6(privilegeLevel):
     room_newroom = ' '
     if request.method == 'POST':
         if 'room kill' in request.form:
+            room_selected =  request.form['room_selection']
             deleteRoom(room_selected)
             return render_template('delete_dump.html', whodel = "the given room")
         if 'room go' in request.form:
@@ -397,18 +398,18 @@ def availableRoomList(day,startime, endtime):
         ),
         alroms AS (SELECT secs.facility_code, secs.room_code FROM secs INNER JOIN schedules ON schedules.uuid = secs.schedule_uuid WHERE 
         schedules.start_time > 0 AND schedules.end_time > 0 AND ((schedules.start_time < %s AND schedules.end_time < %s) OR (schedules.start_time > %s AND schedules.end_time > %s))
-        AND  ((schedules.mon AND %s<>'Monday') OR 
-        (schedules.tues AND %s<>'Tuesday') OR
-        (schedules.wed AND %s<>'Wednesday') OR
-        (schedules.thurs AND %s<>'Thursday') OR
-        (schedules.fri AND %s<>'Friday') OR
-        (schedules.sat AND %s<>'Saturday') OR
-        (schedules.sun AND %s<>'Sunday')
+        AND  ((schedules.mon AND %s='Monday') OR 
+        (schedules.tues AND %s='Tuesday') OR
+        (schedules.wed AND %s='Wednesday') OR
+        (schedules.thurs AND %s='Thursday') OR
+        (schedules.fri AND %s='Friday') OR
+        (schedules.sat AND %s='Saturday') OR
+        (schedules.sun AND %s='Sunday')
         ))
 
         SELECT DISTINCT alroms.facility_code || ' - ' || alroms.room_code FROM alroms;
         """
-    cur.execute(q, (startime, endtime,startime, endtime,day,day,day,day,day,day,day,))
+    cur.execute(q, (startime, startime,endtime, endtime,day,day,day,day,day,day,day,))
     return cur.fetchall()
 
 @app.route('/<privilegeLevel>/adminpage/9', methods=['GET', 'POST'])
@@ -612,11 +613,10 @@ def addInstructor(name, code):
     q = """
         INSERT INTO instructors(id,name) VALUES (%s,%s);
         """
-    cur.execute(q, (name,code,))
+    cur.execute(q, (code,name))
     conn.commit()
     ra = cur.rowcount
     cur.close()
-    print(ra)
     return ra
 
 #SUBJECT
@@ -800,6 +800,8 @@ def schedules_course(course, privilegeLevel):
 
         if 'watchlist go' in request.form:
             insertRowInWatchlist(g.user[0], request.form['select off and term'], request.form['select sec type'], request.form['select inst name and sec num'])
+            return render_template('notification.html',msg = "Added to your watchlist !")
+            
     return render_template('admin_page_2_course.html',showOld=showOld, course=course, course_off_list=course_off_list, course_off_term_selected=course_off_term_selected, instForCourseOffTerm=instForCourseOffTerm, showInst=showInst, allInfo=allInfo, showAllInfo=showAllInfo)
 
 def insertRowInWatchlist(stud_id, offTerm, sec, instSec):

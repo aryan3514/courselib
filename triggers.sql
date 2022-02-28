@@ -112,7 +112,7 @@ CREATE or replace TRIGGER inst_insert_trigger
 --TRIGGER 3--
 
 CREATE or replace TRIGGER inst_insert_numeric_trigger
-    AFTER INSERT ON instructors
+    BEFORE INSERT ON instructors
     FOR EACH ROW
     EXECUTE PROCEDURE check_if_inst_code_is_numeric();
 
