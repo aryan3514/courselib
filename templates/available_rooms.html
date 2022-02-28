@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<br>
+<br>
+<h1 class="box4">{% block title %}Room Availability{% endblock %}</h1>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
+
+{% endblock %}
+
+
+{% block content %}
+{% if toSearch=="Yes" %}
+<h3>
+    <form action="" method="POST">
+      <td>
+        <label class="inplabels" for="username">Select Day</label>
+        <select class="dropdown" name="ravl_selection">
+          <option>Select</option>
+            {% for x in day_list %}
+              <option>
+                {{ x }}
+              </option>
+            {% endfor %}
+          </select>
+        <br>
+        <label class="inplabels" for="username">Start Time</label>
+        <input class="inpbuts" type="text" name="ravl_selection2"
+        </input>
+        <br>
+        <label class="inplabels" for="username">End Time</label>
+        <input class="inpbuts" type="text" name="ravl_selection3"
+          value="{{ request.form['ravl_selection3'] }}" placeholder="End Time (in 24 hours format)">
+        </input>
+        <br>
+        <button class="subbut" type="submit" name="ravl go">
+          Search For Free Rooms
+        </button>
+        <br>
+      </td>
+    </form>
+</h3>
+{%else%}
+<br>
+<br>
+<br>
+<h1 class="arr">All available Rooms (Facility Code - Room Code) from {{starttime}} to {{endtime}} on {{day}}</h1>
+<br>
+<br>
+{% for x in allav%}
+			<h1 class="entries" type="submit" name="select a instructor" value="{{x[0]}}">{{x[0]}}</h1><br>
+	{% endfor %}
+{%endif%}
+{% endblock %}

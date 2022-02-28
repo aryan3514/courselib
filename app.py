@@ -29,6 +29,7 @@ def studenthomepage():
             return redirect(url_for('schedules_for_students', privilegeLevel = 'student'))
         if 'part 5' in request.form:
             return redirect(url_for('watchlist_render', privilegeLevel = 'student'))
+        
     return render_template('student_page.html')
 
 
@@ -46,6 +47,8 @@ def adminhomepage():
             return redirect(url_for('admin_rooms', privilegeLevel = 'admin'))
         if 'part 5' in request.form:
             return redirect(url_for('schedules_for_students', privilegeLevel = 'admin'))
+        if 'part 6' in request.form:
+            return redirect(url_for('available_rooms', privilegeLevel = 'admin'))
     return render_template('admin_homepage.html')
 
 
@@ -57,7 +60,7 @@ def admin_courses(privilegeLevel):
         load_logged_in_admin()
         if request.method == 'POST':
             if 'search' in request.form:
-                return redirect(url_for('adminpage_1', privilegeLevel = 'admin'))
+                return redirect(url_for('search_course', privilegeLevel = 'admin'))
             if 'update' in request.form:
                 return redirect(url_for('adminpage_10', privilegeLevel = 'admin'))
             if 'add' in request.form:
@@ -120,8 +123,6 @@ def admin_rooms(privilegeLevel):
             if 'search' in request.form:
                 return redirect(url_for('adminpage_1', privilegeLevel = 'student'))
     return render_template('admin_rooms.html', privilegeLevel=privilegeLevel)
-
-
 
 
 #
@@ -355,9 +356,58 @@ def adminpage_8(privilegeLevel):
                 return render_template('notification.html', msg = 'Addition Failed : Subject ID or Subject Name or Subject Abbreviation already taken !')
 
 
-    #print(sub_newname, sub_newcode)
-    return render_template('admin_page_8.html')
+@app.route('/<privilegeLevel>/available_rooms', methods=['GET', 'POST'])
+def available_rooms(privilegeLevel):
+    load_logged_in_admin()
+    day= ''
+    starttime = ''
+    endtime = ''
+    dlist = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    toSearch = 'Yes'
+    if request.method == 'POST':
+        if 'ravl go' in request.form:
 
+            day = request.form['ravl_selection']
+
+            starttime= request.form['ravl_selection2']
+
+            endtime = request.form['ravl_selection3']
+
+            if (checkTimeSanity(starttime) and checkTimeSanity(endtime)):
+                m = availableRoomList(day,starttime, endtime)
+                toSearch = 'No'
+            else:
+                return render_template('notification.html', msg = 'Time is not in the appropriate format !')
+    #print(sub_newname, sub_newcode)
+    return render_template('available_rooms.html', day_list = dlist, starttime = starttime, endtime= endtime, allav=m, day = day)
+
+def checkTimeSanity(s):
+    if(not s.isnumeric()):
+        print("hello")
+    print(len(s), int(s))
+    return not(len(s)!=4 or int(s) > 2400)
+
+def availableRoomList(day,startime, endtime):
+    conn = db.start_db()
+    cur = conn.cursor()
+    q = """
+        WITH secs AS (SELECT rooms.facility_code, rooms.room_code, sections.schedule_uuid FROM sections INNER JOIN rooms ON rooms.uuid = sections.room_uuid
+        ),
+        alroms AS (SELECT secs.facility_code, secs.room_code FROM secs INNER JOIN schedules ON schedules.uuid = secs.schedule_uuid WHERE 
+        schedules.start_time > 0 AND schedules.end_time > 0 AND ((schedules.start_time < %s AND schedules.end_time < %s) OR (schedules.start_time > %s AND schedules.end_time > %s))
+        AND  ((schedules.mon AND %s<>'Monday') OR 
+        (schedules.tues AND %s<>'Tuesday') OR
+        (schedules.wed AND %s<>'Wednesday') OR
+        (schedules.thurs AND %s<>'Thursday') OR
+        (schedules.fri AND %s<>'Friday') OR
+        (schedules.sat AND %s<>'Saturday') OR
+        (schedules.sun AND %s<>'Sunday')
+        ))
+
+        SELECT DISTINCT alroms.facility_code || ' - ' || alroms.room_code FROM alroms;
+        """
+    cur.execute(q, (startime, endtime,startime, endtime,day,day,day,day,day,day,day,))
+    return cur.fetchall()
 
 @app.route('/<privilegeLevel>/adminpage/9', methods=['GET', 'POST'])
 def adminpage_9(privilegeLevel):
@@ -405,7 +455,11 @@ def adminpage_10_course(course, privilegeLevel):
     load_logged_in_admin()
     course_newname = ''
     if request.method == 'POST':
+        if 'course kill' in request.form:
+                deleteCourse(course)
+                return render_template('delete_dump.html', whodel = course)
         if 'course go' in request.form:
+            
             course_newname = request.form['course_selection']
             updateCourse(course,course_newname)
             return render_template('change_done.html')
@@ -455,6 +509,24 @@ def search_instructor(privilegeLevel):
         inst_list = getAllInstructorswithCommonStart(insts_selected.lower())
     print("here")
     return render_template('search_instructor.html', instructors=inst_list)
+
+@app.route('/<privilegeLevel>/courses/search', methods=['GET', 'POST'])
+def search_course(privilegeLevel):
+    if privilegeLevel=='admin':
+        load_logged_in_admin()
+    else:
+        load_logged_in_student()
+    cs_selected = ''
+    if request.method == 'POST':
+        if 'course go' in request.form:
+            if(request.form['course_selection'] == ''):
+                cs_selected = ''
+            else:
+                cs_selected = request.form['course_selection']
+    c_list = []
+    if cs_selected != '':
+        c_list = getAllCourseswithCommonStart(cs_selected.lower())
+    return render_template('search_course.html', courses=c_list)
 
 
 def deleteInstructor(instructor):
@@ -591,7 +663,7 @@ def updateCourse(old,new):
 
 
 
-def deleteRoom(name):
+def deleteCourse(name):
     conn = db.start_db()
     cur = conn.cursor()
     q = """

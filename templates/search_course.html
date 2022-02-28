@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<br>
+<br>
+<h1 class="box4">{% block title %}Change Course Information{% endblock %}</h1>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/internal.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<div>
+	<form action="" method="POST">
+		<br>
+		<br>
+		<br>
+		<label class="hupd" for="course_selection">
+	        Search for Course 
+	    </label>
+		<br><br>
+	    <input class="inpbuts" type="text" name="course_selection" 
+			value="{{ request.form['course_selection'] }}" 
+			placeholder="search">
+		</input>
+		<br>
+		<button class="subbut" type="submit" name="course go">
+			Search
+		</button>
+	</form>
+
+	<br>
+	<br>
+	<br>
+	<br>
+	<label class="resbutton" for="course_selection">
+		Results
+	</label>
+	<br>
+
+	{% for x in courses %}
+		<form  action="" method="POST">
+			<label class="entries" type="submit" name="select a course" value="{{x[0]}}">{{x[0]}}</label>
+			<br>
+		</form>
+	{% endfor %}
+</div>
+{% endblock %}
