@@ -13,11 +13,11 @@
     {% if g.user %}
       {% if g.privilegeLevel=='admin' %}
       <a class="box1" href="{{ url_for('adminhomepage') }}">CourseLib</a>
-        <br>
+
       <span class = "box3" >{{ g.user[0] }}</span>
       {%else%}
       <a class="box1" href="{{ url_for('studenthomepage') }}">CourseLib</a>
-        <br>
+
       <span class = "box3" >{{ g.user[0] }}</span>
       {% endif %}
       <br>

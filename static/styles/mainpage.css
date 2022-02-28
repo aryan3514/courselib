@@ -7,23 +7,24 @@ body{
 }
 
 .box1{
-    display: block;
+    float:left;
     background-color:rgb(17, 24, 87);
     color : white;
     margin : auto;
     width:80%;
     text-align: center;
-    font: normal 50px Arial;
+    font: normal 60px "Georgia", "Courier New", serif;
     border: 2px rgb(11, 75, 3) solid;
     padding : 5px;
     border-radius: 10px;
-    font-family: 'Actor';
     border-color: white;
+    text-align:center;
+    padding-left : 5%;
+    
     text-decoration: none;
 }
 
 .box2{
-    display: block;
 	background-color: rgb(17, 24, 87);
 	color: white;
 	font-family: Arial, sans-serif;
@@ -42,7 +43,7 @@ body{
     font-weight:bold;
     border-color: rgb(141, 191, 211);
     text-decoration: none;
-    
+    float:right;   
 }
 
 
